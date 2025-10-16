@@ -98,5 +98,28 @@ namespace Teste.Controllers
 
             return RedirectToAction("index");
         }
+     public async Task<IActionResult> Relatorio(int? id)
+        {
+            if (id == null)
+                return NotFound();
+            var Veiculos = await _context.Veiculos.FindAsync(id);
+            if (Veiculos == null)
+                return NotFound();
+            var consumos = _context.Consumos
+                .Where(c => c.VeiculoId == id)
+                .OrderByDescending(c => c.Data)
+                .ToList();
+
+            decimal total = consumos.Sum(c => c.Valor); // Remover "decimal" da declaração, pois já existe como parâmetro
+
+            ViewBag.Veiculo = Veiculos;
+            ViewBag.Total = total;
+
+            return View(consumos);
+
+        }       
+    
+    
+    
     }
 }
