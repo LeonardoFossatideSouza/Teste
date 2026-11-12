@@ -167,7 +167,7 @@ padrão do Falstad (V<sub>th</sub> = 1,5 V, β = 0,02 A/V²), acionado com os 15
 <p>A corrente de pico fica <b>abaixo</b> da saturação, com margem de 1,65 vez, e a perda de condução é aceitável.
 O MOSFET foi portanto <b>mantido nos valores de fábrica</b>, e a simulação confirmou que a fonte regula normalmente
 com ele. A única ressalva é a ondulação de saída: substituindo-o por um MOSFET de potência realista
-(β = 5 A/V², R<sub>DS(on)</sub> ≈ 24 mΩ, equivalente a um IRFZ44N), a ondulação cai pela metade — medição
+(β = 5 A/V², R<sub>DS(on)</sub> ≈ 24 mΩ, equivalente a um IRFZ44N), a ondulação cai 41 % — medição
 apresentada na seção 6.6.</p>
 <p>Vale observar que durante a partida, quando a malha trabalha no limite de 50 % de razão cíclica, a corrente
 exigida chegaria a V<sub>barramento</sub>·D·T/L<sub>p</sub> = 4,45 A, acima da saturação. O MOSFET entra em
@@ -241,14 +241,15 @@ potência realista (β = 5 A/V², R<sub>DS(on)</sub> ≈ 24 mΩ contra os 3,70 �
 mais idêntico, em 127 V e carga nominal:</p>
 <table>
 <tr><th>MOSFET</th><th>R<sub>DS(on)</sub></th><th>Barramento DC</th><th>Tensão de saída</th><th>Ondulação</th><th>Razão cíclica</th></tr>
-<tr><td>Padrão do Falstad (β = 0,02)</td><td>3,70 Ω</td><td>@@BUS1@@</td><td>@@VO1@@</td><td>@@RIP1@@</td><td>@@D1@@</td></tr>
-<tr><td>De potência (β = 5)</td><td>24 mΩ</td><td>@@BUS5@@</td><td>@@VO5@@</td><td>@@RIP5@@</td><td>@@D5@@</td></tr>
+<tr><td>Padrão do Falstad (β = 0,02)</td><td>3,70 Ω</td><td>178,665 V</td><td><b>11,990 V</b></td><td>633 mV</td><td>16 %</td></tr>
+<tr><td>De potência (β = 5)</td><td>24 mΩ</td><td>178,656 V</td><td><b>12,004 V</b></td><td>376 mV</td><td>16 %</td></tr>
 </table>
-<p>A tensão média regulada praticamente não muda — a malha de realimentação compensa a perda a mais da chave
-aumentando levemente a razão cíclica. O ganho está na <b>ondulação</b>, que cai pela metade: com a chave de menor
-resistência, a corrente de pico no primário é atingida de forma mais repetível a cada ciclo, e o capacitor de saída
-recebe pacotes de energia mais uniformes. Como o roteiro não especifica os parâmetros do MOSFET, o circuito
-entregue mantém o componente padrão.</p>
+<p>A tensão média regulada é praticamente a mesma (11,990 V contra 12,004 V) e a razão cíclica nem se altera:
+a malha de realimentação absorve sozinha a diferença de perdas da chave. O ganho está na <b>ondulação</b>, que cai
+<b>41 %</b>, de 633 mV para 376 mV. Com a chave de menor resistência a corrente de pico no primário é atingida de
+forma mais repetível a cada ciclo, e o capacitor de saída recebe pacotes de energia mais uniformes. O sinal de erro
+também acompanha: −3,751 V com o MOSFET padrão contra −3,649 V com o de potência, refletindo a pequena diferença de
+perdas. Como o roteiro não especifica os parâmetros do MOSFET, o circuito entregue mantém o componente padrão.</p>
 
 <h2>7. Questões para análise e discussão</h2>
 
