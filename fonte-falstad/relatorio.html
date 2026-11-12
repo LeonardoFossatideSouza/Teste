@@ -191,26 +191,26 @@ referência de 6 V, rampa de 20 kHz e comparador PWM). Osciloscópios: barrament
 <h2>6. Procedimento experimental e medições</h2>
 
 <h3>6.1 Experimento 1 — Operação em 127 V AC</h3>
-<p>Fonte AC com Max Voltage = 180 V, carga de 12 Ω. O barramento estabilizou em <b>178,656 V</b>, exatamente o
-previsto (180 V de pico menos as duas quedas de diodo). A saída estabilizou em <b>12,027 V</b>, com o sinal de erro
-parado em −3,685 V e razão cíclica de <b>16 %</b>.</p>
+<p>Fonte AC com Max Voltage = 180 V, carga de 12 Ω. O barramento estabilizou em <b>178,665 V</b>, exatamente o
+previsto (180 V de pico menos as duas quedas de diodo). A saída estabilizou em <b>11,990 V</b>, com o sinal de erro
+parado em −3,751 V e razão cíclica de <b>16 %</b>.</p>
 
 <h3>6.2 Experimento 2 — Teste bivolt automático (220 V AC)</h3>
 <figure><img src="shots_hd/E2_220V.png"></figure>
 <div class="cap"><b>Figura 2</b> — Mesma fonte com a entrada alterada para 311 V de pico (220 V<sub>RMS</sub>). O
-barramento subiu para <b>309,668 V</b>, mas a saída permaneceu em <b>11,901 V</b>: a malha estreitou os pulsos de
-16 % para <b>10 %</b> e o sinal de erro desceu de −3,685 V para −4,327 V. Compare a largura dos pulsos do
+barramento subiu para <b>309,661 V</b>, mas a saída permaneceu em <b>11,962 V</b>: a malha estreitou os pulsos de
+16 % para <b>10 %</b> e o sinal de erro desceu de −3,751 V para −4,308 V. Compare a largura dos pulsos do
 osciloscópio GATE com a da Figura 1.</div>
 
 <h3>6.3 Tabela de resultados (tabela do item 4 do roteiro)</h3>
 <table>
 <tr><th>Tensão da rede (RMS)</th><th>Tensão de pico no Falstad</th><th>Tensão no barramento DC</th><th>Largura de pulso (observação)</th><th>Sinal de erro</th><th>Tensão de saída medida</th></tr>
-<tr><td><b>127 V AC</b></td><td>180 V</td><td><b>178,656 V</b> <span style="color:#4a5a68">(previsto ~178 V)</span></td><td>Razão cíclica <b>16 %</b> — pulsos de ≈ 8 µs em 50 µs</td><td>−3,685 V</td><td><b>12,027 V</b> (ondulação 335 mV)</td></tr>
-<tr><td><b>220 V AC</b></td><td>311 V</td><td><b>309,668 V</b> <span style="color:#4a5a68">(previsto ~309 V)</span></td><td>Razão cíclica <b>10 %</b> — pulsos <b>estreitaram</b> para ≈ 5 µs</td><td>−4,327 V</td><td><b>11,901 V</b> (ondulação 333 mV)</td></tr>
+<tr><td><b>127 V AC</b></td><td>180 V</td><td><b>178,665 V</b> <span style="color:#4a5a68">(previsto ~178 V)</span></td><td>Razão cíclica <b>16 %</b> — pulsos de ≈ 8 µs em 50 µs</td><td>−3,751 V</td><td><b>11,990 V</b> (ondulação 633 mV)</td></tr>
+<tr><td><b>220 V AC</b></td><td>311 V</td><td><b>309,661 V</b> <span style="color:#4a5a68">(previsto ~309 V)</span></td><td>Razão cíclica <b>10 %</b> — pulsos <b>estreitaram</b> para ≈ 5 µs</td><td>−4,308 V</td><td><b>11,962 V</b> (ondulação 370 mV)</td></tr>
 </table>
 <p>Verificando a previsão teórica da seção 2 (produto V<sub>barramento</sub>·D constante): em 127 V temos
 172 × 0,16 = 27,5 e em 220 V temos 300 × 0,10 = 30,0 — uma diferença de apenas 9 %, consistente com o pequeno
-aumento de perdas de comutação na tensão mais alta. A fonte entrega <b>1,002 A / 12,05 W</b> em ambas as redes.</p>
+aumento de perdas de comutação na tensão mais alta. A fonte entrega <b>999 mA / 11,98 W</b> em ambas as redes.</p>
 
 <h3>6.4 Experimento 3 — Teste de variação de carga</h3>
 <figure><img src="shots_hd/E3_carga_leve.png"></figure>
@@ -223,7 +223,7 @@ corresponde à razão cíclica nula.</div>
 <tr><td>220 V · carga nominal (12 Ω)</td><td>992 mA</td><td>11,901 V</td><td>333 mV</td><td>−4,327 V</td><td>10 %</td></tr>
 <tr><td>220 V · carga leve (120 Ω)</td><td>101 mA</td><td>12,077 V</td><td>146 mV</td><td>−4,946 V</td><td>&lt; 1 % (pulso saltado)</td></tr>
 <tr><td colspan="6"><b>Regulação de carga: +1,48 %</b> para uma variação de 10:1 na corrente de saída.
-<b>Regulação de linha: −1,05 %</b> para uma variação de +73 % na tensão da rede.</td></tr>
+<b>Regulação de linha: −0,23 %</b> para uma variação de +73 % na tensão da rede.</td></tr>
 </table>
 
 <h3>6.5 Experimento 4 — A montagem literal do roteiro, para comparação</h3>
@@ -252,13 +252,13 @@ entregue mantém o componente padrão.</p>
 <h2>7. Questões para análise e discussão</h2>
 
 <div class="q"><b>Questão (Experimento 2).</b> O que aconteceu com a largura dos pulsos (<i>Duty Cycle</i>) aplicados ao MOSFET quando a tensão da rede subiu para 220 V? A tensão de saída permaneceu regulada em 12 V?</div>
-<p><b>Os pulsos estreitaram — de 16 % para 10 % — e sim, a saída permaneceu regulada:</b> passou de 12,027 V para
-11,901 V, uma variação de apenas <b>−1,05 %</b> para um aumento de 73 % na tensão da rede.</p>
+<p><b>Os pulsos estreitaram — de 16 % para 10 % — e sim, a saída permaneceu regulada:</b> passou de 11,990 V para
+11,962 V, uma variação de apenas <b>−0,23 %</b> para um aumento de 73 % na tensão da rede.</p>
 <p>O mecanismo é o seguinte. Com o barramento em 309 V em vez de 178 V, a corrente no primário cresce
 <b>1,7 vez mais rápido</b> durante a condução (di/dt = V<sub>barramento</sub>/L<sub>p</sub>). Se a largura do pulso
 fosse mantida, a corrente de pico — e portanto a energia armazenada por ciclo, ½·L·I² — aumentaria, e a saída
 dispararia. A malha impede isso: a tensão de saída tende a subir, o divisor entrega mais de 6 V à entrada
-inversora, o amplificador de erro baixa sua saída (de −3,685 V para −4,327 V) e o comparador, encontrando a rampa
+inversora, o amplificador de erro baixa sua saída (de −3,751 V para −4,308 V) e o comparador, encontrando a rampa
 mais cedo, <b>encurta o pulso</b> na medida exata para manter constante a corrente de pico.</p>
 <p>Essa é precisamente a definição de <b>fonte bivolt automática</b>: não há chave seletora nem relé; a regulação
 por largura de pulso absorve sozinha a variação da rede. A mesma malha explica por que fontes chaveadas aceitam
@@ -285,7 +285,7 @@ de 470 µF se descarrega muito mais lentamente entre os pulsos.</p>
 <div class="q"><b>Discussão complementar.</b> Por que a tensão medida no barramento DC é ligeiramente menor que a tensão de pico configurada na fonte AC?</div>
 <p>Porque a corrente atravessa sempre <b>dois diodos em série</b> da ponte (um no ramo positivo e outro no ramo de
 retorno). Com queda direta de ≈ 0,7 V cada, o barramento fica em V<sub>pico</sub> − 1,4 V. As medições confirmam o
-modelo com precisão notável: <b>178,656 V</b> medidos contra 178,6 V previstos na rede de 127 V, e <b>309,668 V</b>
+modelo com precisão notável: <b>178,665 V</b> medidos contra 178,6 V previstos na rede de 127 V, e <b>309,661 V</b>
 contra 309,6 V previstos na rede de 220 V — erro inferior a 0,1 V nos dois casos.</p>
 <p>Além disso, o capacitor de 47 µF não mantém a tensão perfeitamente constante: entre dois picos consecutivos da
 rede retificada (8,33 ms em 60 Hz) ele alimenta sozinho a fonte, e sua tensão decai. É a ondulação de 120 Hz bem
@@ -316,10 +316,10 @@ alterar a resistência.</p>
 
 <h2>9. Conclusão</h2>
 <p>A fonte chaveada flyback foi montada com os cinco estágios completos e opera de forma estável nas duas redes.
-As medições confirmam quantitativamente o comportamento previsto: barramento de <b>178,656 V</b> em 127 V e
-<b>309,668 V</b> em 220 V, ambos a menos de 0,1 V do modelo que desconta as duas quedas de diodo da ponte.</p>
+As medições confirmam quantitativamente o comportamento previsto: barramento de <b>178,665 V</b> em 127 V e
+<b>309,661 V</b> em 220 V, ambos a menos de 0,1 V do modelo que desconta as duas quedas de diodo da ponte.</p>
 <p>A operação <b>bivolt automática</b> foi comprovada: aumentando a rede em 73 %, a malha de realimentação estreitou
-os pulsos de 16 % para 10 % e a saída variou apenas <b>−1,05 %</b>. O teste de carga mostrou regulação de
+os pulsos de 16 % para 10 % e a saída variou apenas <b>−0,23 %</b>. O teste de carga mostrou regulação de
 <b>+1,48 %</b> para uma variação de 10:1 na corrente. Em ambos os casos o sinal de erro, monitorado em um
 osciloscópio próprio, moveu-se na direção correta dentro da janela da rampa — tornando visível o funcionamento da
 malha, que normalmente é a parte mais abstrata do circuito.</p>
