@@ -147,12 +147,34 @@ com o sinal de erro parado em +15,0 V.</p>
 <b>limite de razão cíclica máxima de 50 %</b> — recurso obrigatório em todo CI controlador de flyback real,
 justamente para impedir a saturação do núcleo.</p>
 
-<h3>4.2 Falta a rede de compensação</h3>
-<p>Mesmo com a faixa limitada, o ganho de 10<sup>5</sup> amplifica a própria ondulação da saída e joga o erro de um
-limite ao outro a cada ciclo: a fonte passa a funcionar em rajadas, com ondulação de <b>1,30 V</b>. A correção é um
-<b>capacitor de 100 nF entre a saída e a entrada inversora</b> do amplificador de erro, transformando-o em
-integrador — é a compensação tipo I, a mais simples das redes usadas em fontes reais. Com ela a ondulação caiu para
-<b>335 mV</b> e o PWM ficou uniforme.</p>
+<h3>4.2 Sem rede de compensação, o controle deixa de ser PWM</h3>
+<p>Com a excursão limitada, a fonte <b>já regula</b>: o ensaio sem o capacitor de compensação entregou
+<b>12,046 V</b> na carga. O problema é outro. O ganho de 10<sup>5</sup> amplifica a própria ondulação da saída, e o
+amplificador de erro passa a <b>saltar entre os dois limites</b> da sua faixa em vez de repousar num ponto de
+operação. O osciloscópio do sinal de erro mostra uma onda quadrada entre 0 V e −5 V (valor médio −2,769 V), e o do
+gate mostra pulsos de largura visivelmente irregular, variando de um ciclo para o outro.</p>
+<p>O controle deixa de ser modulação por largura de pulso e vira um <b>liga-desliga</b> (controle histerético). A
+tensão média continua correta, mas a razão cíclica deixa de ter valor definido — justamente a grandeza que o
+roteiro pede para observar nos Experimentos 2 e 3.</p>
+<p>A correção é um <b>capacitor de 100 nF entre a saída e a entrada inversora</b> do amplificador de erro,
+transformando-o em integrador — a compensação tipo I, a mais simples das redes usadas em fontes reais. Com ela o
+sinal de erro repousa num valor fixo e os pulsos ficam uniformes e mensuráveis:</p>
+<table>
+<tr><th>Configuração (127 V, carga nominal)</th><th>Tensão de saída</th><th>Ondulação</th><th>Sinal de erro</th><th>Razão cíclica</th></tr>
+<tr><td>Sem compensação</td><td>12,046 V</td><td><b>291 mV</b></td><td>Onda quadrada entre 0 e −5 V<br>(média −2,769 V)</td><td><b>Irregular</b>, pulso a pulso</td></tr>
+<tr><td>Com compensação (100 nF)</td><td>11,990 V</td><td>633 mV</td><td><b>−3,751 V estável</b></td><td><b>16 % uniforme</b></td></tr>
+</table>
+<figure><img src="shots_hd/E6_sem_compensacao.png"></figure>
+<div class="cap"><b>Figura 1</b> — Fonte <b>sem</b> o capacitor de compensação, em 127 V. Repare no osciloscópio da
+direita: o sinal de ERRO é uma onda quadrada que bate alternadamente nos dois limites da faixa, e no osciloscópio
+do GATE os pulsos têm larguras claramente diferentes entre si. A tensão de saída (12,046 V) continua correta — o
+que se perde é a modulação propriamente dita.</div>
+<p><b>Uma observação contraintuitiva, mas coerente.</b> A ondulação medida <b>sem</b> compensação foi <i>menor</i>
+(291 mV contra 633 mV). Isso não é um erro de medição: é uma característica conhecida do controle histerético, que
+reage à saída imediatamente, sem o atraso introduzido pelo integrador, e por isso costuma apresentar resposta
+transitória superior à do controle linear. O preço é a <b>frequência de chaveamento variável</b> — que inviabiliza
+o projeto do filtro de EMI e do transformador, e por isso praticamente nenhuma fonte comercial a adota. Entre uma
+ondulação 340 mV menor e um chaveamento de frequência previsível, o projeto fica com o segundo.</p>
 
 <h3>4.3 Verificação do MOSFET (mantido nos valores de fábrica)</h3>
 <p>Antes de fechar a montagem, a chave foi verificada contra a corrente que o conversor realmente exige. O MOSFET
@@ -176,7 +198,7 @@ controladores reais implementam ciclo a ciclo.</p>
 
 <h2>5. Etapas de operação (tabela verdade do chaveamento)</h2>
 <figure><img src="shots_hd/E1_127V.png"></figure>
-<div class="cap"><b>Figura 1</b> — Fonte completa operando em 127 V AC. Da esquerda para a direita: rede, ponte
+<div class="cap"><b>Figura 2</b> — Fonte completa operando em 127 V AC. Da esquerda para a direita: rede, ponte
 retificadora, capacitor de barramento de 47 µF, snubber, transformador flyback, MOSFET, retificação de saída,
 carga de 12 Ω e a malha de realimentação (divisor, amplificador de erro com o capacitor de compensação de 100 nF,
 referência de 6 V, rampa de 20 kHz e comparador PWM). Osciloscópios: barramento DC, saída, GATE e sinal de ERRO.</div>
@@ -197,10 +219,10 @@ parado em −3,751 V e razão cíclica de <b>16 %</b>.</p>
 
 <h3>6.2 Experimento 2 — Teste bivolt automático (220 V AC)</h3>
 <figure><img src="shots_hd/E2_220V.png"></figure>
-<div class="cap"><b>Figura 2</b> — Mesma fonte com a entrada alterada para 311 V de pico (220 V<sub>RMS</sub>). O
+<div class="cap"><b>Figura 3</b> — Mesma fonte com a entrada alterada para 311 V de pico (220 V<sub>RMS</sub>). O
 barramento subiu para <b>309,661 V</b>, mas a saída permaneceu em <b>11,962 V</b>: a malha estreitou os pulsos de
 16 % para <b>10 %</b> e o sinal de erro desceu de −3,751 V para −4,308 V. Compare a largura dos pulsos do
-osciloscópio GATE com a da Figura 1.</div>
+osciloscópio GATE com a da Figura 2.</div>
 
 <h3>6.3 Tabela de resultados (tabela do item 4 do roteiro)</h3>
 <table>
@@ -214,7 +236,7 @@ aumento de perdas de comutação na tensão mais alta. A fonte entrega <b>999 mA
 
 <h3>6.4 Experimento 3 — Teste de variação de carga</h3>
 <figure><img src="shots_hd/E3_carga_leve.png"></figure>
-<div class="cap"><b>Figura 3</b> — Entrada mantida em 220 V e carga alterada de 12 Ω (1 A) para 120 Ω (100 mA). A
+<div class="cap"><b>Figura 4</b> — Entrada mantida em 220 V e carga alterada de 12 Ω (1 A) para 120 Ω (100 mA). A
 saída ficou em <b>11,919 V</b> e a ondulação caiu de 370 mV para <b>239 mV</b>. O osciloscópio GATE mostra pulsos
 visivelmente mais estreitos (razão cíclica de 6 %, contra 10 % em carga nominal) e o sinal de erro desceu de
 −4,308 V para <b>−4,755 V</b>, aproximando-se do limite inferior de −5 V que corresponde à razão cíclica nula.</div>
@@ -228,7 +250,7 @@ visivelmente mais estreitos (razão cíclica de 6 %, contra 10 % em carga nomina
 
 <h3>6.5 Experimento 4 — A montagem literal do roteiro, para comparação</h3>
 <figure><img src="shots_hd/E4_roteiro_literal.png"></figure>
-<div class="cap"><b>Figura 4</b> — O mesmo circuito <b>sem</b> os ajustes das seções 4.1 e 4.2 (amp-op com saída
+<div class="cap"><b>Figura 5</b> — O mesmo circuito <b>sem</b> os ajustes das seções 4.1 e 4.2 (amp-op com saída
 de ±15 V e sem capacitor de compensação). O estágio de entrada funciona normalmente — o barramento está em
 <b>178,326 V</b> —, mas o sinal de ERRO está travado em <b>+15,001 V</b>, o traço do GATE é uma <b>linha reta em
 +15 V</b> (o MOSFET nunca desliga) e a saída fica em <b>22,8 nV</b>. É a demonstração prática de que um flyback com
@@ -305,19 +327,19 @@ alterar a resistência.</p>
 
 <div class="link">
 <div class="t">CIRCUITO PRINCIPAL — Fonte chaveada flyback 12 V / 1 A, entrada 127 V AC</div>
-<div class="mono" id="LINK_A"></div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3EwFZIheAHKlAoAbuAOwBsIAzJACzlIBM5VU4IxqYWTqMSOAJkaQrUwJcAE569XgFMAZgEMArgBsALnxr0hm8ZJAyFK9fxGlKYUqYbUpcpWo1k6Ic4OfbbhhwHcBunWASUDi+TvSB9JSUGP6QIX6uOolxoc6JUTHJOADGLtH+GS4WnLDwlITBAOZ5mcWFhSk1-khg4UGNLW30SKIRwQBOaK3Nw7RIpGzwcbmdIGOks2S0XFClU5AQHcNL2KI7wQAqaL1BhIz71DAIq5slYmI4siyUqGRkC3vvTGDQSKuQtHiPTc3VEWV89WKwKKEw0Z2EQQwS38nns6lySK6IEx5GWJTKFUa8NxqBIMX2ROI5LxOIpOGqZJJIEZYWCvhxfTErFiOEGXLYQX5TLYgPZyP2QrpviFfTAkHGPMGcoVsvlpHm3ymvPAarmKt1FJ18HikrxysEeMa5r1llaqA1VrtNvATvGXHiYFd3OtbuC8h1Cuh91BpBiqAAtH85etOEbjdKgkHE8NpiBg0NwrrZlw1vBNh6s8Mfdy4gRPc5iIRwshuu0mC8WLHuB6a2ggj72vSXRWq936MTGumk-RiArB0FR6QJDFJ3607QZw2MMRqCvUDFkCBw5vo1NY7u4Ph5zFCF9pyxaJcXHM938Vs3qufT1OF8yqQNsSvnqT32vNZTF1QP8-0aYCGz-SguTZb8XCgv83lhZYKggqDoUgiYQAAcQAQQOABRHAkLTRNRAwVDRFQPCACUqIAeRwAB7NNcW+SgyAwQg-goHM7zmZiyEYuZQ3rJZ7g4tBVijPjaEEQSWmYV5T0IDceL4sA5PCb4nCpPRuHIcAcCAA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3EwFZIheAHKlAoAbuAOwBsIAzJACzlIBM5VU4IxqYWTqMSOAJkaQrUwJcAE569XgFMAZgEMArgBsALnxr0hm8ZJAyFK9fxGlKYUqYbUpcpWo1k6Ic4OfbbhhwHcBunWASUDi+TvSB9JSUGP6QIX6uOolxoc6JUTHJOADGLtH+GS4WnLDwlITBAOZ5mcWFhSk1-khg4UGNLW30SKIRwQBOaK3Nw7RIpGzwcbmdIGOks2S0XFClU5AQHcNL2KI7wQAqaL1BhIz71DAIq5slYmI4siyUqGRkC3vvTGDQSKuQtHiPTc3VEWV89WKwKKEw0Z2EQQwS38nns6lySK6IEx5GWJTKFUa8NxqBIMX2ROI5LxOIpOGqZJJIEZYWCvhxfTErFiOEGXLYQX5TLYgPZyP2QrpviFfTAkHGPMGcoVsvlpHm3ymvPAarmKt1FJ18HikrxysEeMa5r1llaqA1VrtNvATvGXHiYFd3OtbuC8h1Cuh91BpBiqAAtH85etOEbjdKgkHE8NpiBg0NwrrZlw1vBNh6s8Mfdy4gRPc5iIRwshuu0mC8WLHuB6a2ggj72vSXRWq936MTGumk-RiArB0FR6QJDFJ3607QZw2MMRqCvUDFkCBw5vo1NY7u4Ph5zFCF9pyxaJcXHM938Vs3qufT1OF8yqQNsSvnqT32vNZTF1QP8-0aYCGz-SguTZb8XCgv83lhZYKggqDoUgiYQAAcQAQQOABRHAkLTRNRAwVDRFQPCACUqIAeRwAB7NNcW+SgyAwQg-goHM7zmZiyEYuZQ3rJZ7g4tBVijPjaEEQSWmYV5T0IDceL4sA5PCb4nCpPRuHIcAcCAA</a></div>
 <div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Abre com Max Voltage = 180 V (rede 127 V). A saída estabiliza em ≈ 12,0 V após cerca de 40 ms de tempo simulado.</div>
 </div>
 
 <div class="link">
 <div class="t">MESMO CIRCUITO EM 220 V AC — teste bivolt automático</div>
-<div class="mono" id="LINK_B"></div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3EwFZIheAHKlAoAbuAOwBsIAzJACzlIBM5VU4IxqZYEqX0SOAJkVIVqYEuACc9enwCmAMwCGAVwA2AF3416wrRKkhZi1RoGjSlMKTMNq0+cvWaydEBaEuddo44DugvbpgklA4fs70QfSUlBgBkKH+brpJ8WEuSdGxKTgAxq4xAZmulkww8FSEIQDm+VklRUWptQFIYBHBTa3t9EhikSEATmhtLSO0SKSoYOW5w1ITc+S0XFCw5Qghfl1L2GJkyyEAKmh9wYSM+6jUZZCc0Jyl0OLiOHIslGxkpL1CX0xgPFWkFoCR+ujB2T8DRKEJK8QE5xEwQw+wCXgcGjyKO6IGxO0e8EolSaiPxJFil02IHJ+LxlPiNRplKZLiaeP64lYcRwQ05U2CfPxUxBfjpB0F9ISgv60wW-XiQ1lVmCSpA40m4BmisgC3VmoW9M18ClXMpqslflVeo4Bz1TRtqGtbWwXPtzrQXNVEy4OAU+u+YmePTEsVQAFokEbyqUo3ApcEwUHFvE8kntl6Rtx1rcqRmIjrvq78OBkPRiIQIqW0B0mB8WDGYLxLVWkCqC9X6AySy5y5WXKSmmnA8FiAtByOFpJYqPJr6QFP3qgMMRqCul+BI2HkLG4DHpjMCAvCH8F8RaNdXGro5GVo2cDUjyfaLEaQrcSvF9TiNO61M434aTXT8gKaICwLrShOSpIDINIICyD+eJlkqGCoIhKDUAAcQAQUOABRHBkPnBMQzQsRUDwgAlSiAHkcAAe3nJZ-koMgMEISMKG4G81SYsgGLVUhQ1cfZnnYtBVkjCApCEATWmYNhj0IWJpkk3iwDkiJ-mcb99EbchwBwIA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3EwFZIheAHKlAoAbuAOwBsIAzJACzlIBM5VU4IxqZYEqX0SOAJkVIVqYEuACc9enwCmAMwCGAVwA2AF3416wrRKkhZi1RoGjSlMKTMNq0+cvWaydEBaEuddo44DugvbpgklA4fs70QfSUlBgBkKH+brpJ8WEuSdGxKTgAxq4xAZmulkww8FSEIQDm+VklRUWptQFIYBHBTa3t9EhikSEATmhtLSO0SKSoYOW5w1ITc+S0XFCw5Qghfl1L2GJkyyEAKmh9wYSM+6jUZZCc0Jyl0OLiOHIslGxkpL1CX0xgPFWkFoCR+ujB2T8DRKEJK8QE5xEwQw+wCXgcGjyKO6IGxO0e8EolSaiPxJFil02IHJ+LxlPiNRplKZLiaeP64lYcRwQ05U2CfPxUxBfjpB0F9ISgv60wW-XiQ1lVmCSpA40m4BmisgC3VmoW9M18ClXMpqslflVeo4Bz1TRtqGtbWwXPtzrQXNVEy4OAU+u+YmePTEsVQAFokEbyqUo3ApcEwUHFvE8kntl6Rtx1rcqRmIjrvq78OBkPRiIQIqW0B0mB8WDGYLxLVWkCqC9X6AySy5y5WXKSmmnA8FiAtByOFpJYqPJr6QFP3qgMMRqCul+BI2HkLG4DHpjMCAvCH8F8RaNdXGro5GVo2cDUjyfaLEaQrcSvF9TiNO61M434aTXT8gKaICwLrShOSpIDINIICyD+eJlkqGCoIhKDUAAcQAQUOABRHBkPnBMQzQsRUDwgAlSiAHkcAAe3nJZ-koMgMEISMKG4G81SYsgGLVUhQ1cfZnnYtBVkjCApCEATWmYNhj0IWJpkk3iwDkiJ-mcb99EbchwBwIA</a></div>
 <div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Idêntico ao anterior, com Max Voltage = 311 V. Observe no osciloscópio GATE que os pulsos ficam mais estreitos e a saída continua em ≈ 12 V.</div>
 </div>
 
 <div class="link">
 <div class="t">CIRCUITO COMPARATIVO — montagem literal do roteiro (não regula)</div>
-<div class="mono" id="LINK_C"></div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3EwFZIheAHKlAoAbuAOwBsIAzJACzlIBM5VU4IxqYWTqMSOAJkaQrUwJcAE569XgFMAZgEMArgBsALnxr0hm8ZJAyFK9fxGlKYUqYbUpcpWo1k6Ic4OfbbhhwHcBunWASUDi+TvSB9JSUGP6QIX6uOolxoc6JUTHJOADGLtH+GS4WnLDwlITBAOZ5mcWFhSk1-khg4UGNLW30SKIRwQBOaK3Nw7RIpGzwcbmdIGOks2S0XFClU5AQHcNL2KI7wQAqaL1BhIz71DAIq5slYmI4siyUqGRkC3vvTGDQSKuQtHiPTc3VEWV89WKwKKEw0Z2EQQwS38nns6lySK6IEx5GWJTKFUa8NxqBIMX2ROI5LxOIpOGqZJJIEZYWCvhxfTErFiOEGXLYQX5TLYgPZyP2QrpviFfTAkHGPMGcoVsvlpHm3ymvPAarmKt1FJ18HikrxysEeMa5r1llaqA1VrtNvATvGXHiYFd3OtbuC8h1Cuh91BpBiyBAAFpw3L1pwjcaCJ7nMRCOFkN12kwXiw49wPem0EEfe16S7k6my-RiY1g8dSLXiAqa0FG-XaDFW36QBIO9mMMRqAPUGG-lG-jGpnGJ3B8N328yvj2WLRLi45pO-is89Ul4RF-PGXFBv3B9nGUPNZTe6gLxfGrfsxfKFy2c9UM-SBe3rDlhUny-oQ-JgAHEAEEDgAURwX9uyCaEMAA0RUAggAlFCAHkcAAe27XFvkoMgMEIP4KC4X4mHoMRyGwuZQyzJZ7iItBVnHOZaOonD8luMg90IMMyL+cIaOfZg2CcKlwgE8hwBwIA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3EwFZIheAHKlAoAbuAOwBsIAzJACzlIBM5VU4IxqYWTqMSOAJkaQrUwJcAE569XgFMAZgEMArgBsALnxr0hm8ZJAyFK9fxGlKYUqYbUpcpWo1k6Ic4OfbbhhwHcBunWASUDi+TvSB9JSUGP6QIX6uOolxoc6JUTHJOADGLtH+GS4WnLDwlITBAOZ5mcWFhSk1-khg4UGNLW30SKIRwQBOaK3Nw7RIpGzwcbmdIGOks2S0XFClU5AQHcNL2KI7wQAqaL1BhIz71DAIq5slYmI4siyUqGRkC3vvTGDQSKuQtHiPTc3VEWV89WKwKKEw0Z2EQQwS38nns6lySK6IEx5GWJTKFUa8NxqBIMX2ROI5LxOIpOGqZJJIEZYWCvhxfTErFiOEGXLYQX5TLYgPZyP2QrpviFfTAkHGPMGcoVsvlpHm3ymvPAarmKt1FJ18HikrxysEeMa5r1llaqA1VrtNvATvGXHiYFd3OtbuC8h1Cuh91BpBiyBAAFpw3L1pwjcaCJ7nMRCOFkN12kwXiw49wPem0EEfe16S7k6my-RiY1g8dSLXiAqa0FG-XaDFW36QBIO9mMMRqAPUGG-lG-jGpnGJ3B8N328yvj2WLRLi45pO-is89Ul4RF-PGXFBv3B9nGUPNZTe6gLxfGrfsxfKFy2c9UM-SBe3rDlhUny-oQ-JgAHEAEEDgAURwX9uyCaEMAA0RUAggAlFCAHkcAAe27XFvkoMgMEIP4KC4X4mHoMRyGwuZQyzJZ7iItBVnHOZaOonD8luMg90IMMyL+cIaOfZg2CcKlwgE8hwBwIA</a></div>
 <div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Amp-op de erro com saída de ±15 V e sem compensação. Usado na seção 6.5 para demonstrar o travamento em 100 % de razão cíclica.</div>
 </div>
 
@@ -333,14 +355,73 @@ malha, que normalmente é a parte mais abstrata do circuito.</p>
 <p>O trabalho também mostrou que a montagem literal do roteiro não regula. Um amp-op sem rede de realimentação é um
 comparador: sua saída satura em +15 V, muito fora da janela de −5 V a +5 V da rampa, e o PWM trava em 100 %. Como
 o flyback só transfere energia durante o <b>bloqueio</b> da chave, 100 % de razão cíclica significa potência
-nula — e a fonte fica presa nesse estado, com 22,8 nV na saída. As duas correções aplicadas — limitar a excursão do
-amplificador de erro, o que de quebra implementa o limite de razão cíclica máxima, e acrescentar o capacitor de
-compensação — não são artifícios de simulação: são exatamente as funções que qualquer CI controlador de fonte
-chaveada implementa internamente. Todos os componentes e valores especificados no roteiro, MOSFET incluído, foram
-mantidos.</p>
+nula — e a fonte fica presa nesse estado, com 22,8 nV na saída. Das duas correções aplicadas, uma é
+indispensável e a outra é de qualidade. Limitar a excursão do amplificador de erro é o que faz a fonte sair do
+zero, e de quebra implementa o limite de razão cíclica máxima. O capacitor de compensação não é necessário para
+regular — sem ele a saída também fica em 12 V —, mas é o que converte um liga-desliga de frequência variável em
+modulação por largura de pulso propriamente dita, com razão cíclica definida e mensurável. Nenhuma das duas é
+artifício de simulação: são exatamente as funções que qualquer CI controlador de fonte chaveada implementa
+internamente. Todos os componentes e valores especificados no roteiro, MOSFET incluído, foram mantidos.</p>
 
 <h2>Apêndice — Netlist do circuito principal</h2>
 <p style="font-size:9pt">Texto importável pelo Falstad (<i>File &gt; Import from Text</i>):</p>
-<pre class="mono" id="NET_A" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0"></pre>
+<pre class="mono" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0">$ 1 0.000001 150 50 180 50
+v 176 304 352 304 0 1 60 180 0 0 0.5
+d 176 304 176 192 2 default
+d 352 304 352 192 2 default
+d 176 416 176 304 2 default
+d 352 416 352 304 2 default
+w 176 192 352 192 0
+w 352 192 448 192 0
+w 176 416 352 416 0
+w 352 416 448 416 0
+c 448 192 448 416 0 0.000047 0
+g 448 416 448 448 0
+w 448 192 512 192 0
+w 512 192 576 192 0
+r 512 192 512 256 0 10000
+c 512 256 512 320 0 0.00000001 0
+w 512 320 576 320 0
+T 576 192 704 320 4 0.001 0.1 0 0 0.99
+f 640 336 576 336 0 1.5 0.02
+w 576 352 576 416 0
+w 448 416 576 416 0
+d 704 192 832 192 2 default
+c 832 192 832 320 0 0.00047 0
+w 704 320 768 320 0
+w 768 320 832 320 0
+g 768 320 768 352 0
+w 832 192 960 192 0
+r 960 192 960 320 0 12
+w 832 320 960 320 0
+w 960 192 1056 192 0
+r 1056 192 1056 256 0 10000
+r 1056 256 1056 320 0 10000
+w 960 320 1056 320 0
+w 1056 256 1120 256 0
+w 1120 256 1120 560 0
+w 1120 560 1056 560 0
+a 1056 576 992 576 8 0 -5 1000000 0 0 100000
+w 992 576 992 512 0
+c 992 512 1056 512 0 0.0000001 0
+w 1056 512 1056 560 0
+v 1152 672 1152 592 0 0 40 6 0 0 0.5
+w 1152 592 1056 592 0
+g 1152 672 1152 704 0
+w 992 576 992 656 0
+w 992 656 928 656 0
+a 928 640 864 640 8 15 -15 1000000 0 0 100000
+v 928 736 928 624 0 4 20000 5 0 0 0.5
+g 928 736 928 768 0
+r 864 640 768 640 0 100
+w 768 640 640 640 0
+w 640 640 640 496 0
+w 640 496 640 336 0
+207 640 496 576 496 0 GATE
+207 992 576 896 576 0 ERRO
+o 9 32 0 143875 300 0.5 0 2 9 3
+o 26 8 0 4329987 5 0.5 1 2 26 3
+o 51 1 0 37378 10 0.5 2 1
+o 52 1 0 135682 2 0.5 3 1</pre>
 
 </body></html>
