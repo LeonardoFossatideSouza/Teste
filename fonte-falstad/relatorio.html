@@ -140,8 +140,8 @@ sua saída vai imediatamente a ±15 V. Como a rampa de comparação vai apenas d
 comparador PWM <b>permanentemente em nível alto</b> — razão cíclica de 100 %.</p>
 <p>E aqui está a armadilha específica do flyback: <b>com 100 % de razão cíclica a chave nunca abre, o diodo de saída
 nunca conduz e a fonte não entrega absolutamente nada</b>. A saída fica em zero, o erro continua saturado e o
-circuito trava nesse estado. O Experimento 4 (seção 7) comprova: saída de <b>0,56 V</b> com o sinal de erro parado
-em +15,0 V.</p>
+circuito trava nesse estado. O Experimento 4 (seção 6.5) comprova: saída de <b>22,8 nV</b> — zero, para todos os efeitos —
+com o sinal de erro parado em +15,0 V.</p>
 <p><b>Correção:</b> limitar a excursão de saída do amplificador de erro para a faixa <b>0 a −5 V</b> (campo
 <i>Output Range</i> do amp-op). Isso mantém o erro dentro da janela da rampa e, de quebra, implementa o
 <b>limite de razão cíclica máxima de 50 %</b> — recurso obrigatório em todo CI controlador de flyback real,
@@ -215,24 +215,25 @@ aumento de perdas de comutação na tensão mais alta. A fonte entrega <b>999 mA
 <h3>6.4 Experimento 3 — Teste de variação de carga</h3>
 <figure><img src="shots_hd/E3_carga_leve.png"></figure>
 <div class="cap"><b>Figura 3</b> — Entrada mantida em 220 V e carga alterada de 12 Ω (1 A) para 120 Ω (100 mA). A
-saída ficou em <b>12,077 V</b> e a ondulação caiu para 146 mV. O osciloscópio GATE mostra pulsos extremamente
-estreitos e espaçados, e o sinal de erro desceu a −4,946 V, praticamente encostado no limite inferior de −5 V que
-corresponde à razão cíclica nula.</div>
+saída ficou em <b>11,919 V</b> e a ondulação caiu de 370 mV para <b>239 mV</b>. O osciloscópio GATE mostra pulsos
+visivelmente mais estreitos (razão cíclica de 6 %, contra 10 % em carga nominal) e o sinal de erro desceu de
+−4,308 V para <b>−4,755 V</b>, aproximando-se do limite inferior de −5 V que corresponde à razão cíclica nula.</div>
 <table>
 <tr><th>Condição</th><th>Corrente de saída</th><th>Tensão de saída</th><th>Ondulação</th><th>Sinal de erro</th><th>Razão cíclica</th></tr>
-<tr><td>220 V · carga nominal (12 Ω)</td><td>992 mA</td><td>11,901 V</td><td>333 mV</td><td>−4,327 V</td><td>10 %</td></tr>
-<tr><td>220 V · carga leve (120 Ω)</td><td>101 mA</td><td>12,077 V</td><td>146 mV</td><td>−4,946 V</td><td>&lt; 1 % (pulso saltado)</td></tr>
-<tr><td colspan="6"><b>Regulação de carga: +1,48 %</b> para uma variação de 10:1 na corrente de saída.
+<tr><td>220 V · carga nominal (12 Ω)</td><td>997 mA</td><td>11,962 V</td><td>370 mV</td><td>−4,308 V</td><td>10 %</td></tr>
+<tr><td>220 V · carga leve (120 Ω)</td><td>99 mA</td><td>11,919 V</td><td>239 mV</td><td>−4,755 V</td><td>6 %</td></tr>
+<tr><td colspan="6"><b>Regulação de carga: −0,36 %</b> para uma variação de 10:1 na corrente de saída.
 <b>Regulação de linha: −0,23 %</b> para uma variação de +73 % na tensão da rede.</td></tr>
 </table>
 
 <h3>6.5 Experimento 4 — A montagem literal do roteiro, para comparação</h3>
 <figure><img src="shots_hd/E4_roteiro_literal.png"></figure>
-<div class="cap"><b>Figura 4</b> — O mesmo circuito <b>sem</b> os ajustes da seção 4.1 e 4.2 (amp-op com saída de
-±15 V e sem capacitor de compensação). O barramento funciona normalmente (177,755 V), mas o sinal de ERRO está
-travado em <b>+15,001 V</b>, o traço do GATE é uma <b>linha reta em +15 V</b> — o MOSFET nunca desliga — e a saída
-fica em <b>560 mV</b>. É a demonstração prática de que um flyback com razão cíclica de 100 % não transfere energia
-nenhuma.</div>
+<div class="cap"><b>Figura 4</b> — O mesmo circuito <b>sem</b> os ajustes das seções 4.1 e 4.2 (amp-op com saída
+de ±15 V e sem capacitor de compensação). O estágio de entrada funciona normalmente — o barramento está em
+<b>178,326 V</b> —, mas o sinal de ERRO está travado em <b>+15,001 V</b>, o traço do GATE é uma <b>linha reta em
++15 V</b> (o MOSFET nunca desliga) e a saída fica em <b>22,8 nV</b>. É a demonstração prática de que um flyback com
+razão cíclica de 100 % não transfere absolutamente nenhuma energia: sem o bloqueio da chave, o diodo do secundário
+nunca conduz.</div>
 
 <h3>6.6 Comparação: MOSFET padrão × MOSFET de potência</h3>
 <p>Para quantificar o efeito da resistência de condução da chave, o circuito foi simulado também com um MOSFET de
@@ -270,17 +271,22 @@ para potência de saída constante.</p>
 
 <div class="q"><b>Observação (Experimento 3).</b> Verifique como a malha de realimentação ajusta instantaneamente o chaveamento para impedir que a tensão de saída ultrapasse os 12 V.</div>
 <p>Reduzindo a carga de 1 A para 100 mA, a potência exigida cai dez vezes. A malha respondeu levando o sinal de erro
-de −4,327 V para <b>−4,946 V</b> — a apenas 54 mV do limite inferior de −5 V, que corresponde a pulso nulo. A razão
-cíclica caiu para menos de 1 % e a saída ficou em <b>12,077 V</b>, ou seja, subiu apenas 1,5 % apesar da redução de
-10:1 na corrente.</p>
-<p>Um detalhe interessante aparece no osciloscópio do GATE: em vez de pulsos uniformes muito estreitos, veem-se
-pulsos espaçados, com ciclos inteiros <b>sem nenhum pulso</b>. Isso acontece porque a largura exigida (≈ 300 ns)
-fica abaixo da resolução do passo de cálculo de 1 µs, e o controlador passa a <b>saltar ciclos</b> para entregar a
-energia média correta. Longe de ser um defeito, esse é exatamente o <b>modo de rajadas</b> (<i>burst mode</i>) que
-os CIs controladores modernos adotam deliberadamente em carga leve, porque reduz as perdas de comutação e melhora
-o rendimento em espera — é o que permite a uma fonte moderna consumir menos de 100 mW sem carga.</p>
-<p>Vale notar também que a ondulação de saída caiu de 333 mV para 146 mV: com menos corrente drenada, o capacitor
-de 470 µF se descarrega muito mais lentamente entre os pulsos.</p>
+de −4,308 V para <b>−4,755 V</b>, estreitando a razão cíclica de 10 % para <b>6 %</b>. A saída ficou em
+<b>11,919 V</b>: uma variação de apenas <b>−0,36 %</b> apesar da redução de 10:1 na corrente. A malha de fato
+impede que a tensão suba — a saída sequer ultrapassou os 12 V.</p>
+<p>A relação entre a potência e a largura do pulso não é linear, e sim <b>quadrática</b>. No modo de condução
+descontínua a energia transferida por ciclo vale ½·L<sub>p</sub>·I<sub>pico</sub>², com
+I<sub>pico</sub> = V<sub>barramento</sub>·D·T/L<sub>p</sub>, de modo que a potência cresce com D². Reduzir a
+potência em dez vezes exige dividir a razão cíclica por √10 ≈ 3,2 — compatível com o que foi medido, lembrando que
+a leitura do osciloscópio inclui o atraso de comutação discutido abaixo.</p>
+<p>A ondulação de saída também caiu, de 370 mV para <b>239 mV</b>: com menos corrente drenada, o capacitor de
+470 µF se descarrega muito mais lentamente entre os pulsos.</p>
+<p><b>Nota de medição.</b> Comparando as três condições, a razão cíclica lida no osciloscópio fica
+sistematicamente cerca de 3,5 pontos percentuais acima do valor que o sinal de erro prevê pela relação
+D = (V<sub>erro</sub> + 5)/10: 16 % contra 12,5 % em 127 V, 10 % contra 6,9 % em 220 V e 6 % contra 2,5 % em carga
+leve. O desvio é praticamente constante e corresponde a um atraso fixo de ≈ 1,8 µs no caminho
+comparador → resistor de gate → MOSFET, coerente com a largura de banda finita do amp-op. Em um controlador real
+esse atraso é justamente o que estabelece a <b>largura mínima de pulso</b> do CI.</p>
 
 <div class="q"><b>Discussão complementar.</b> Por que a tensão medida no barramento DC é ligeiramente menor que a tensão de pico configurada na fonte AC?</div>
 <p>Porque a corrente atravessa sempre <b>dois diodos em série</b> da ponte (um no ramo positivo e outro no ramo de
@@ -320,13 +326,13 @@ As medições confirmam quantitativamente o comportamento previsto: barramento d
 <b>309,661 V</b> em 220 V, ambos a menos de 0,1 V do modelo que desconta as duas quedas de diodo da ponte.</p>
 <p>A operação <b>bivolt automática</b> foi comprovada: aumentando a rede em 73 %, a malha de realimentação estreitou
 os pulsos de 16 % para 10 % e a saída variou apenas <b>−0,23 %</b>. O teste de carga mostrou regulação de
-<b>+1,48 %</b> para uma variação de 10:1 na corrente. Em ambos os casos o sinal de erro, monitorado em um
+<b>−0,36 %</b> para uma variação de 10:1 na corrente. Em ambos os casos o sinal de erro, monitorado em um
 osciloscópio próprio, moveu-se na direção correta dentro da janela da rampa — tornando visível o funcionamento da
 malha, que normalmente é a parte mais abstrata do circuito.</p>
 <p>O trabalho também mostrou que a montagem literal do roteiro não regula. Um amp-op sem rede de realimentação é um
 comparador: sua saída satura em +15 V, muito fora da janela de −5 V a +5 V da rampa, e o PWM trava em 100 %. Como
 o flyback só transfere energia durante o <b>bloqueio</b> da chave, 100 % de razão cíclica significa potência
-nula — e a fonte fica presa nesse estado, com 0,56 V na saída. As duas correções aplicadas — limitar a excursão do
+nula — e a fonte fica presa nesse estado, com 22,8 nV na saída. As duas correções aplicadas — limitar a excursão do
 amplificador de erro, o que de quebra implementa o limite de razão cíclica máxima, e acrescentar o capacitor de
 compensação — não são artifícios de simulação: são exatamente as funções que qualquer CI controlador de fonte
 chaveada implementa internamente. Todos os componentes e valores especificados no roteiro, MOSFET incluído, foram
