@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório TRIAC</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 14mm 15mm; }
+* { box-sizing: border-box; }
+body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 10.2pt; line-height: 1.5; color: #1a1a1a; margin: 0; }
+h1 { font-size: 19pt; margin: 0 0 4px; color: #0b3d6b; line-height: 1.25; }
+h2 { font-size: 12.5pt; color: #0b3d6b; background: #dceaf7; border-left: 5px solid #1565a8;
+     padding: 6px 10px; margin: 22px 0 10px; page-break-after: avoid; }
+h3 { font-size: 10.8pt; color: #1565a8; margin: 14px 0 6px; page-break-after: avoid;
+     border-bottom: 1px solid #c9dcec; padding-bottom: 3px; }
+p { margin: 0 0 8px; text-align: justify; }
+ul, ol { margin: 0 0 8px; padding-left: 20px; }
+li { margin-bottom: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 8.9pt; page-break-inside: avoid; }
+th { background: #1565a8; color: #fff; text-align: left; padding: 5px 7px; font-weight: 600; }
+td { border-bottom: 1px solid #d8e2ea; padding: 4px 7px; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f9fc; }
+.cap { font-size: 8.5pt; color: #4a5a68; text-align: center; margin: 3px 0 14px; font-style: italic; }
+figure { margin: 10px 0 4px; page-break-inside: avoid; }
+figure img { width: 100%; border: 1px solid #b9c7d3; display: block; }
+code, .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 7.6pt; word-break: break-all; }
+.capa { border: 2px solid #1565a8; border-radius: 4px; padding: 20px 22px; margin-bottom: 18px; background: #f7fbfe; }
+.capa .kicker { font-size: 9pt; letter-spacing: 1.6px; color: #1565a8; font-weight: 700; text-transform: uppercase; }
+.meta { margin-top: 14px; font-size: 9.6pt; }
+.meta b { color: #0b3d6b; }
+.link { background: #f0f5f9; border: 1px solid #cbd9e4; border-left: 4px solid #1565a8;
+        padding: 7px 10px; margin: 6px 0 12px; page-break-inside: avoid; }
+.link .t { font-weight: 700; color: #0b3d6b; font-size: 9.4pt; }
+.nota { background: #fff8e6; border-left: 4px solid #e0a800; padding: 7px 11px; margin: 10px 0; font-size: 9.3pt; }
+.q { background: #eef5fb; border-left: 5px solid #1565a8; padding: 8px 11px; margin: 16px 0 8px; page-break-after: avoid; }
+.q b { color: #0b3d6b; }
+.pb { page-break-before: always; }
+.two { display: flex; gap: 10px; }
+.two figure { flex: 1; margin: 6px 0; }
+.destaque { font-weight: 700; color: #0b3d6b; }
+</style></head><body>
+
+<div class="capa">
+  <div class="kicker">SENAI SSP &middot; 2026 &middot; Técnico em Eletrônica</div>
+  <div style="font-size:10pt;color:#44596b;margin:2px 0 10px">Unidade Curricular: Eletrônica de Potência &middot; Avaliação Prática (5 pontos)</div>
+  <h1>Acionamento de carga CA com TRIAC:<br>chave estática e controle de potência por ângulo de fase</h1>
+  <div class="meta">
+    <b>Aluno:</b> Leonardo Fossati de Souza Nunes<br>
+    <b>Simulador:</b> Falstad Circuit Simulator (falstad.com/circuit)<br>
+    <b>Data:</b> 12/11/2026 &nbsp;&middot;&nbsp; <b>Prazo de entrega:</b> 16/11/2026
+  </div>
+</div>
+
+<h2>1. Objetivos da prática</h2>
+<ul>
+<li>Compreender o princípio de condução bidirecional do TRIAC em corrente alternada.</li>
+<li>Montar e simular dois circuitos de acionamento de carga CA com componentes discretos no Falstad.</li>
+<li>Observar, no osciloscópio virtual, as formas de onda de tensão e corrente na carga, no TRIAC e no capacitor da rede de disparo.</li>
+<li>Comparar o comportamento de uma <b>chave estática</b> (liga/desliga) com o de um <b>controle de potência</b> (dimmer por ângulo de fase).</li>
+</ul>
+
+<h2>2. Materiais e configuração do ambiente</h2>
+<p>Os dois circuitos foram montados a partir de uma área de trabalho limpa (<i>Circuits &gt; Blank Circuit</i>), com a
+simulação em execução (<i>RUN / STOP</i> ativo) e passo de cálculo de 5&nbsp;µs. Todas as medidas apresentadas neste
+relatório foram lidas diretamente dos osciloscópios do simulador, em regime permanente (t &gt; 350&nbsp;ms).</p>
+
+<div class="nota">
+<b>Observação técnica sobre a lâmpada.</b> O roteiro indica “manter padrão: 127&nbsp;V / 100&nbsp;W”. O valor de fábrica do
+componente <i>Lamp</i> no Falstad é, na verdade, <b>120&nbsp;V / 100&nbsp;W</b>, e foi mantido sem alteração, conforme a
+instrução de não modificar a configuração. A fonte de 180&nbsp;V de pico corresponde a 180/√2&nbsp;=&nbsp;<b>127,3&nbsp;Vrms</b>,
+ou seja, a rede de 127&nbsp;V. A lâmpada opera, portanto, ligeiramente acima da sua tensão nominal — o que é
+coerente com o ensaio e não altera nenhuma conclusão da prática. Resistência nominal a quente:
+R = V²/P = 120²/100 = <b>144&nbsp;Ω</b>.
+</div>
+
+<h2>3. Parte A — Chave estática CA (liga/desliga)</h2>
+<p>Nesta etapa o TRIAC funciona como um <b>interruptor eletrônico</b>: uma fonte de baixa tensão (5&nbsp;V CC), isolada do
+circuito de potência pela chave e pelo resistor de gatilho, comanda a condução de uma lâmpada ligada à rede alternada.</p>
+
+<h3>3.1 Lista de componentes</h3>
+<table>
+<tr><th style="width:26%">Componente</th><th style="width:40%">Caminho no menu Draw</th><th>Configuração adotada</th></tr>
+<tr><td>Fonte CA</td><td>Inputs and Sources &gt; Add Voltage Source (2-terminal)</td><td>Waveform AC &middot; Max Voltage 180&nbsp;V &middot; 60&nbsp;Hz</td></tr>
+<tr><td>Carga (lâmpada)</td><td>Outputs and Labels &gt; Add Lamp</td><td>Padrão: 120&nbsp;V / 100&nbsp;W</td></tr>
+<tr><td>TRIAC</td><td>Active Building Blocks &gt; Add TRIAC</td><td>Padrão: I<sub>GT</sub>&nbsp;=&nbsp;10&nbsp;mA &middot; I<sub>H</sub>&nbsp;=&nbsp;8,2&nbsp;mA &middot; R<sub>G-MT1</sub>&nbsp;=&nbsp;100&nbsp;Ω</td></tr>
+<tr><td>Fonte CC (controle)</td><td>Inputs and Sources &gt; Add Voltage Source (2-terminal)</td><td>Waveform DC &middot; Max Voltage 5&nbsp;V</td></tr>
+<tr><td>Chave</td><td>Passive Components &gt; Add Switch</td><td>Padrão (clique alterna aberta/fechada)</td></tr>
+<tr><td>Resistor de gate</td><td>Passive Components &gt; Add Resistor</td><td>100&nbsp;Ω</td></tr>
+<tr><td>Terra (GND)</td><td>Inputs and Sources &gt; Add Ground</td><td>Referência de 0&nbsp;V, no nó de MT1</td></tr>
+</table>
+
+<h3>3.2 Montagem</h3>
+<ol>
+<li>Um polo da fonte CA foi ligado a um terminal da lâmpada.</li>
+<li>O outro terminal da lâmpada foi ligado ao terminal superior do TRIAC (<b>MT2</b>).</li>
+<li>O terminal inferior do TRIAC (<b>MT1</b>) foi ligado ao outro polo da fonte CA, e o <b>Terra</b> foi inserido nesse mesmo nó.</li>
+<li>No circuito de controle, o polo positivo da fonte CC de 5&nbsp;V foi ligado a um lado da <b>chave</b>.</li>
+<li>O outro lado da chave foi ligado ao <b>resistor de 100&nbsp;Ω</b>, e a outra extremidade do resistor ao terminal lateral do TRIAC (<b>Gate</b>).</li>
+<li>O polo negativo da fonte CC foi ligado ao nó de <b>Terra (MT1)</b>, fechando o caminho da corrente de disparo.</li>
+</ol>
+
+<figure><img src="shots_hd/A1_chave_fechada.png"></figure>
+<div class="cap"><b>Figura 1</b> — Parte A com a chave <b>fechada</b>: a lâmpada acende com brilho máximo e o osciloscópio da
+carga (à esquerda) exibe a senoide completa — semiciclos positivo e negativo. O osciloscópio da direita mostra a
+tensão sobre o TRIAC em condução (apenas 834&nbsp;mV de pico) e a corrente que o atravessa.</div>
+
+<figure><img src="shots_hd/A2_chave_aberta.png"></figure>
+<div class="cap"><b>Figura 2</b> — Parte A com a chave <b>aberta</b>: sem corrente de gatilho o TRIAC bloqueia, a lâmpada
+permanece apagada, os pontos amarelos de corrente ficam parados na malha de carga e a linha do osciloscópio da
+lâmpada fica reta em zero. Toda a tensão da rede (127,3&nbsp;Vrms) aparece sobre o TRIAC.</div>
+
+<h3>3.3 Tabela verdade / tabela de estados</h3>
+<table>
+<tr><th>Chave S1</th><th>Corrente de gate</th><th>Estado do TRIAC</th><th>Tensão na lâmpada</th><th>Tensão sobre o TRIAC</th><th>Lâmpada</th></tr>
+<tr><td><b>Aberta</b> (0)</td><td>0&nbsp;mA</td><td>Bloqueado (ambos os sentidos)</td><td>914&nbsp;µV<sub>rms</sub> (≈&nbsp;0)</td><td>127,32&nbsp;V<sub>rms</sub> &middot; pico 180,0&nbsp;V</td><td>Apagada</td></tr>
+<tr><td><b>Fechada</b> (1)</td><td>≈&nbsp;25&nbsp;mA CC</td><td>Conduzindo nos dois semiciclos</td><td>126,59&nbsp;V<sub>rms</sub> &middot; pico 179,2&nbsp;V</td><td>789&nbsp;mV<sub>rms</sub> &middot; pico 834&nbsp;mV</td><td>Acesa (brilho máximo)</td></tr>
+</table>
+<p>A corrente de gatilho foi obtida do divisor formado pelo resistor externo e pela resistência interna gate–MT1 do
+modelo: I<sub>G</sub> = 5&nbsp;V / (100&nbsp;Ω + 100&nbsp;Ω) = <b>25&nbsp;mA</b>, confirmada pela medição de 2,5&nbsp;V sobre o resistor
+de 100&nbsp;Ω. Esse valor é <b>2,5&nbsp;vezes</b> a corrente mínima de disparo do modelo (I<sub>GT</sub>&nbsp;=&nbsp;10&nbsp;mA),
+garantindo disparo confiável em todos os semiciclos.</p>
+
+<h3>3.4 Análise dos resultados</h3>
+<p>Com a chave fechada a queda sobre o TRIAC em condução é de apenas <b>0,79&nbsp;V<sub>rms</sub></b> contra
+<b>126,6&nbsp;V<sub>rms</sub></b> na carga: o dispositivo se comporta como um contato praticamente ideal, dissipando
+pouco mais de 0,6&nbsp;% da potência do circuito. Como a fonte CC mantém corrente de gate permanente, o TRIAC é
+redisparado logo após cada passagem por zero, e a carga recebe a <b>onda completa</b> — não há recorte. Trata-se,
+portanto, de uma chave estática: liga e desliga sem contato mecânico, sem arco e sem desgaste, com a vantagem
+adicional de o comando (5&nbsp;V) estar eletricamente separado da potência (127&nbsp;V).</p>
+<p>Ao abrir a chave, observa-se o ponto central da prática: o bloqueio <b>não</b> é instantâneo. A lâmpada só apaga
+quando a onda senoidal passa pelo zero — comportamento detalhado na resposta à questão Q2.</p>
+
+<h2>4. Parte B — Controle de potência (dimmer com DIAC)</h2>
+<p>O comando manual foi substituído por uma <b>rede de atraso RC</b> associada a um <b>DIAC</b>, permitindo regular o
+brilho da lâmpada de forma contínua por controle de ângulo de fase.</p>
+
+<h3>4.1 Modificações e novos componentes</h3>
+<table>
+<tr><th style="width:26%">Ação / Componente</th><th style="width:40%">Caminho no menu Draw</th><th>Configuração</th></tr>
+<tr><td>Remover controle CC</td><td>Selecionar e pressionar Delete</td><td>Excluídos: fonte CC, chave e resistor de 100&nbsp;Ω</td></tr>
+<tr><td>Potenciômetro</td><td>Passive Components &gt; Add Potentiometer</td><td>Impedance / Max: 250&nbsp;kΩ</td></tr>
+<tr><td>Resistor de proteção</td><td>Passive Components &gt; Add Resistor</td><td>10&nbsp;kΩ</td></tr>
+<tr><td>Capacitor</td><td>Passive Components &gt; Add Capacitor</td><td>100&nbsp;nF</td></tr>
+<tr><td>DIAC</td><td>Active Building Blocks &gt; Add DIAC</td><td>Padrão: V<sub>BO</sub>&nbsp;=&nbsp;30&nbsp;V &middot; R<sub>on</sub>&nbsp;=&nbsp;500&nbsp;Ω &middot; I<sub>H</sub>&nbsp;=&nbsp;10&nbsp;mA</td></tr>
+</table>
+
+<h3>4.2 Conexão da rede de disparo</h3>
+<ol>
+<li>Um lado do resistor de 10&nbsp;kΩ foi ligado ao nó entre a lâmpada e o terminal <b>MT2</b> do TRIAC.</li>
+<li>O outro lado do resistor foi ligado ao terminal superior <b>e ao cursor</b> (pino central) do potenciômetro de 250&nbsp;kΩ — ligação em <b>reostato</b>.</li>
+<li>O terminal inferior do potenciômetro foi ligado a um lado do capacitor de 100&nbsp;nF, e o outro lado do capacitor ao <b>Terra (MT1)</b>.</li>
+<li>Um terminal do <b>DIAC</b> foi ligado ao ponto entre o potenciômetro e o capacitor, e o outro terminal diretamente ao <b>Gate</b> do TRIAC.</li>
+</ol>
+<p>O resistor de 10&nbsp;kΩ é essencial: ele limita a corrente quando o cursor chega ao fim de curso, impedindo que o
+capacitor seja ligado diretamente à rede através de resistência nula.</p>
+
+<figure><img src="shots_hd/B3_pot_medio.png"></figure>
+<div class="cap"><b>Figura 3</b> — Parte B em posição intermediária do potenciômetro (≈&nbsp;85&nbsp;kΩ no total).
+À esquerda, a tensão na lâmpada já "fatiada": cada semiciclo só começa a ser entregue após o disparo.
+À direita, a tensão no capacitor — a rampa de carga exponencial interrompida pelo disparo do DIAC em 30&nbsp;V
+(forma de onda em dente de serra). O cursor <i>Resistance</i> aparece na barra lateral direita.</div>
+
+<h3>4.3 Medições em função da posição do cursor</h3>
+<p>O controle <i>Resistance</i> foi deslizado de um extremo ao outro. Para cada posição foram registrados o valor
+eficaz na lâmpada e o pico de tensão no capacitor. O ângulo de disparo α foi calculado a partir do valor eficaz
+medido, pela relação do controle de fase com carga resistiva:</p>
+<p style="text-align:center;margin:6px 0 10px"><b>V<sub>rms</sub>(α) = (V<sub>p</sub>/√2) · √[ 1 − α/π + sen(2α)/(2π) ]</b></p>
+<table>
+<tr><th>Posição do cursor</th><th>R do potenc.</th><th>R total da rede</th><th>V na lâmpada</th><th>α (calculado)</th><th>P / P<sub>máx</sub></th><th>Pico no capacitor</th><th>Brilho observado</th></tr>
+<tr><td>Fim de curso — R mínima</td><td>≈ 1,3&nbsp;kΩ</td><td>≈ 11&nbsp;kΩ</td><td>125,55&nbsp;V</td><td>25°</td><td>98&nbsp;%</td><td>30,18&nbsp;V</td><td>Máximo</td></tr>
+<tr><td>≈ 95&nbsp;% do curso</td><td>≈ 12,5&nbsp;kΩ</td><td>≈ 22,5&nbsp;kΩ</td><td>123,25&nbsp;V</td><td>37°</td><td>95&nbsp;%</td><td>30,14&nbsp;V</td><td>Muito alto</td></tr>
+<tr><td>≈ 70&nbsp;% do curso</td><td>≈ 75&nbsp;kΩ</td><td>≈ 85&nbsp;kΩ</td><td>105,78&nbsp;V</td><td>71°</td><td>70&nbsp;%</td><td>30,06&nbsp;V</td><td>Médio</td></tr>
+<tr><td>≈ 45&nbsp;% do curso</td><td>≈ 138&nbsp;kΩ</td><td>≈ 148&nbsp;kΩ</td><td>78,00&nbsp;V</td><td>101°</td><td>38&nbsp;%</td><td>30,05&nbsp;V</td><td>Baixo</td></tr>
+<tr><td>≈ 35&nbsp;% do curso</td><td>≈ 163&nbsp;kΩ</td><td>≈ 173&nbsp;kΩ</td><td>64,85&nbsp;V</td><td>112°</td><td>26&nbsp;%</td><td>30,03&nbsp;V</td><td>Muito baixo</td></tr>
+<tr><td>≈ 20&nbsp;% do curso</td><td>≈ 200&nbsp;kΩ</td><td>≈ 210&nbsp;kΩ</td><td>38,17&nbsp;V</td><td>135°</td><td>9&nbsp;%</td><td>30,02&nbsp;V</td><td>Filamento em brasa</td></tr>
+<tr><td><b>Fim de curso — R máxima</b></td><td>≈ 245&nbsp;kΩ</td><td>≈ 255&nbsp;kΩ</td><td>0,008&nbsp;V</td><td>não dispara</td><td>0&nbsp;%</td><td><b>18,71&nbsp;V</b></td><td><b>Apagada</b></td></tr>
+</table>
+
+<div class="nota">
+Repare na última linha: com a resistência máxima o capacitor atinge apenas <b>18,7&nbsp;V</b> de pico, abaixo do limiar
+de 30&nbsp;V do DIAC. O gatilho nunca é liberado, o TRIAC permanece bloqueado e a lâmpada apaga por completo.
+Em todas as demais posições o pico do capacitor estaciona em ≈&nbsp;30&nbsp;V — exatamente a tensão de ruptura do DIAC —
+o que confirma que é esse componente, e não o capacitor, que define o instante do disparo.
+</div>
+
+<h3>4.4 Formas de onda nos extremos do curso</h3>
+<figure><img src="shots_hd/B1_pot_minimo.png"></figure>
+<div class="cap"><b>Figura 4</b> — Potenciômetro na <b>resistência mínima</b> (≈&nbsp;11&nbsp;kΩ): α&nbsp;≈&nbsp;25°. A onda na lâmpada é
+praticamente a senoide completa, com um pequeno degrau junto à passagem por zero; 125,55&nbsp;V<sub>rms</sub> (98&nbsp;% da
+potência). No capacitor, a rampa é rápida e atinge 30&nbsp;V logo no início de cada semiciclo.</div>
+
+<figure><img src="shots_hd/B5_pot_maximo.png"></figure>
+<div class="cap"><b>Figura 5</b> — Potenciômetro <b>próximo ao máximo</b> (≈&nbsp;173&nbsp;kΩ): α&nbsp;≈&nbsp;112°. Só a parte final de cada
+semiciclo chega à carga — "fatias" estreitas e tardias; 64,85&nbsp;V<sub>rms</sub> (26&nbsp;% da potência) e filamento apenas
+avermelhado. No capacitor, a rampa é lenta e demora muito mais para alcançar os 30&nbsp;V.</div>
+
+<figure><img src="shots_hd/B2_pot_alto_brilho.png"></figure>
+<div class="cap"><b>Figura 6</b> — Posição intermediária alta (≈&nbsp;22,5&nbsp;kΩ): α&nbsp;≈&nbsp;37°, 123,25&nbsp;V<sub>rms</sub>,
+95&nbsp;% da potência. O recorte junto ao zero já é perceptível, mas o brilho continua alto.</div>
+
+<figure><img src="shots_hd/B4_pot_baixo.png"></figure>
+<div class="cap"><b>Figura 7</b> — Posição intermediária baixa (≈&nbsp;148&nbsp;kΩ): α&nbsp;≈&nbsp;101°, 78,00&nbsp;V<sub>rms</sub>,
+38&nbsp;% da potência. O disparo já ocorre depois do pico da rede e o filamento começa a avermelhar.</div>
+
+<h3>4.5 Tabela de estados da rede de disparo</h3>
+<table>
+<tr><th>Condição</th><th>DIAC</th><th>Pulso no gate</th><th>TRIAC</th><th>Efeito na carga</th></tr>
+<tr><td>V<sub>C</sub> &lt; 30&nbsp;V (V<sub>BO</sub>)</td><td>Bloqueado (alta impedância)</td><td>Não</td><td>Mantém o estado anterior</td><td>Capacitor continua carregando</td></tr>
+<tr><td>V<sub>C</sub> atinge 30&nbsp;V</td><td>Entra em ruptura (R<sub>on</sub> ≈ 500&nbsp;Ω)</td><td>Sim — pulso de ≈&nbsp;50&nbsp;mA</td><td><b>Dispara</b> (I<sub>G</sub> &gt; I<sub>GT</sub>)</td><td>Carga recebe a tensão a partir de α</td></tr>
+<tr><td>Corrente de carga → 0</td><td>Já desligado</td><td>—</td><td><b>Desliga</b> quando |I| &lt; I<sub>H</sub></td><td>Fim do semiciclo; ciclo recomeça</td></tr>
+<tr><td>V<sub>C</sub> nunca atinge 30&nbsp;V</td><td>Nunca conduz</td><td>Nunca</td><td>Permanece bloqueado</td><td>Lâmpada apagada</td></tr>
+</table>
+
+<h2>5. Questões conceituais</h2>
+
+<div class="q"><b>Q1 — Condução bidirecional.</b> Diferentemente de um diodo ou tiristor comum (SCR), por que o TRIAC permite a passagem de corrente nos dois sentidos da rede elétrica?</div>
+<p>Porque a diferença está na <b>estrutura física do semicondutor</b>, não apenas no modo de comando.</p>
+<p>O diodo é uma junção PN simples: conduz quando o anodo está positivo em relação ao catodo e bloqueia na
+polaridade inversa. O SCR é um dispositivo de quatro camadas (P-N-P-N) com anodo, catodo e gatilho; mesmo sendo
+comandado, ele só pode conduzir <b>em um sentido</b>, quando o anodo está positivo. Em corrente alternada, portanto,
+um SCR sozinho aproveita apenas metade da onda — o semiciclo negativo é perdido.</p>
+<p>O TRIAC é um dispositivo de <b>cinco camadas (N-P-N-P-N)</b>, funcionalmente equivalente a <b>dois SCRs ligados em
+antiparalelo (inverso-paralelo) dentro da mesma pastilha e compartilhando o mesmo gatilho</b>. Por isso seus terminais
+principais não se chamam anodo e catodo — não há polaridade fixa — e sim <b>MT1 e MT2</b> (<i>Main Terminal</i> 1 e 2).
+No semiciclo em que MT2 está positivo em relação a MT1, conduz uma das estruturas internas; no semiciclo seguinte,
+com a polaridade invertida, conduz a estrutura complementar. Além disso, o TRIAC pode ser disparado nos
+<b>quatro quadrantes</b> de operação (gate positivo ou negativo, com MT2 positivo ou negativo), o que o torna
+compatível com comando CC — como na Parte A — ou com pulsos de qualquer polaridade.</p>
+<p><b>Evidência experimental:</b> na Figura 1, com uma única fonte CC de comando, o osciloscópio da lâmpada registra a
+senoide <b>completa</b>, 126,59&nbsp;V<sub>rms</sub> com picos de +179&nbsp;V e −179&nbsp;V. Se o componente fosse um SCR, o
+traço mostraria apenas os semiciclos positivos e o valor eficaz cairia para cerca de 89&nbsp;V (1/√2 do valor medido).</p>
+
+<div class="q"><b>Q2 — Comutação natural.</b> Na Parte A, ao abrir a chave de controle, por que o TRIAC não interrompe a corrente imediatamente no meio de um semiciclo?</div>
+<p>Porque o TRIAC é um dispositivo <b>de engate (latching)</b>: o gatilho tem poder para <b>ligar</b>, mas não para
+<b>desligar</b>.</p>
+<p>O pulso de gate apenas inicia a condução. A partir do instante em que a estrutura interna entra em condução,
+ela se automantém pela realimentação regenerativa das junções internas — o próprio fluxo de corrente principal
+sustenta o estado ligado. Retirar a corrente de gate não tem efeito algum: o TRIAC continua conduzindo.</p>
+<p>O único modo de desligá-lo é fazer a <b>corrente principal cair abaixo da corrente de manutenção</b>
+(I<sub>H</sub>, <i>holding current</i> — 8,2&nbsp;mA no modelo do Falstad). Em corrente alternada isso acontece
+espontaneamente duas vezes por ciclo, na <b>passagem da corrente por zero</b>. É o que se chama de
+<b>comutação natural</b> (ou comutação pela rede): o TRIAC "se desliga sozinho", sem necessidade de circuito
+auxiliar de bloqueio.</p>
+<p>Portanto, ao abrir a chave no meio de um semiciclo, a corrente de gate desaparece, mas a carga continua
+alimentada até o próximo cruzamento por zero — um atraso máximo de <b>8,33&nbsp;ms</b> em 60&nbsp;Hz (meio período).
+Só a partir daí, sem novo pulso de gate, o TRIAC permanece bloqueado e a lâmpada apaga de vez (Figura 2).</p>
+<p><b>Consequências práticas.</b> (i) Essa característica é uma <b>vantagem</b>: o desligamento ocorre com corrente
+nula, o que elimina arco, sobretensões de chaveamento e interferência eletromagnética — por isso o disparo em
+"passagem por zero" é a base dos relés de estado sólido. (ii) Com <b>carga indutiva</b> (motores, reatores) a corrente
+está atrasada em relação à tensão, de modo que o zero de corrente ocorre <b>depois</b> do zero de tensão; no
+desligamento o TRIAC fica submetido a um degrau de tensão (dv/dt) que pode redispará-lo indevidamente — daí o
+uso de <b>redes snubber</b> (RC série em paralelo com o TRIAC) em aplicações reais. Com a carga resistiva desta
+prática, tensão e corrente estão em fase e o problema não se manifesta.</p>
+
+<div class="q"><b>Q3 — Função do DIAC.</b> Na Parte B, qual é o papel do DIAC entre o capacitor e o gatilho do TRIAC em termos de liberação de pulso?</div>
+<p>O DIAC funciona como uma <b>chave de limiar bidirecional</b> — um "detector de nível de tensão" que transforma a
+rampa lenta do capacitor em um <b>pulso de disparo rápido, intenso e bem definido</b>.</p>
+<p>Ele é um diodo de disparo simétrico de duas camadas equivalentes, <b>sem terminal de gatilho</b>, com tensão de
+ruptura (<i>breakover</i>) V<sub>BO</sub>&nbsp;=&nbsp;30&nbsp;V no modelo adotado. Seu papel na rede de disparo é triplo:</p>
+<ol>
+<li><b>Isolar o gate enquanto o capacitor carrega.</b> Abaixo de 30&nbsp;V o DIAC é praticamente um circuito aberto
+(10<sup>8</sup>&nbsp;Ω). Sem ele, o capacitor despejaria corrente contínua e crescente no gatilho, que dispararia de
+forma imprecisa e diferente a cada semiciclo.</li>
+<li><b>Liberar o pulso de uma só vez.</b> Ao atingir V<sub>BO</sub>, o DIAC entra em ruptura e apresenta
+<b>resistência diferencial negativa</b>: sua resistência despenca para ≈&nbsp;500&nbsp;Ω e o capacitor se descarrega
+abruptamente no gate. A corrente de pico resultante é I<sub>G</sub> ≈ 30&nbsp;V / (500&nbsp;Ω + 100&nbsp;Ω) ≈ <b>50&nbsp;mA</b>,
+cinco vezes a corrente mínima de disparo do TRIAC (10&nbsp;mA) — disparo garantido e repetitivo.</li>
+<li><b>Garantir simetria entre os semiciclos.</b> Por ser bidirecional, o DIAC rompe no mesmo módulo de tensão
+(+30&nbsp;V e −30&nbsp;V), fazendo o TRIAC disparar com o <b>mesmo ângulo</b> nos dois semiciclos. Sem essa simetria
+surgiria uma componente CC na carga e o brilho "piscaria" a 60&nbsp;Hz.</li>
+</ol>
+<p>É exatamente o que mostram os osciloscópios: em todas as posições do potenciômetro em que há disparo, o pico de
+tensão no capacitor fica travado entre <b>30,02&nbsp;V e 30,18&nbsp;V</b> — o DIAC "corta" a rampa sempre no mesmo nível,
+e o que varia é apenas o <b>tempo</b> que o capacitor leva para chegar lá.</p>
+
+<div class="q"><b>Q4 — Análise visual.</b> Compare a forma de onda na lâmpada quando o potenciômetro está no mínimo e quando está próximo ao máximo, explicando a relação entre o formato da onda e o brilho observado.</div>
+<p><b>Potenciômetro no mínimo (Figura 4 — R total ≈ 11&nbsp;kΩ).</b> A constante de tempo é pequena
+(τ = RC ≈ 1,1&nbsp;ms, contra 8,33&nbsp;ms de meio período), de modo que o capacitor acompanha quase sem atraso a tensão
+da rede e atinge os 30&nbsp;V logo no começo de cada semiciclo. O disparo ocorre em <b>α ≈ 25°</b> e a forma de onda na
+lâmpada é <b>praticamente a senoide completa</b>, com apenas um pequeno degrau junto à passagem por zero.
+Resultado: <b>125,55&nbsp;V<sub>rms</sub>, ou 98&nbsp;% da potência máxima</b> — brilho máximo, filamento branco-amarelado.</p>
+<p><b>Potenciômetro próximo ao máximo (Figura 5 — R total ≈ 173&nbsp;kΩ).</b> A constante de tempo sobe para
+τ ≈ 17&nbsp;ms, maior que o próprio semiciclo. Dois efeitos se somam: o capacitor <b>demora muito mais</b> para
+carregar e sua amplitude é <b>fortemente atenuada</b> pelo divisor RC (ωRC ≈ 6,5). Ele só alcança os 30&nbsp;V bem
+depois do pico da rede, disparando em <b>α ≈ 112°</b>. A onda na lâmpada vira uma <b>"fatia" estreita colada ao final
+de cada semiciclo</b>: a tensão salta de zero direto para o valor instantâneo da rede naquele ângulo (degrau abrupto)
+e depois decai seguindo a senoide até o zero. Resultado: <b>64,85&nbsp;V<sub>rms</sub>, apenas 26&nbsp;% da potência</b> —
+filamento visivelmente avermelhado. No fim de curso o capacitor nem chega aos 30&nbsp;V (pico de 18,7&nbsp;V) e a
+lâmpada <b>apaga por completo</b>.</p>
+<p><b>Relação entre onda e brilho.</b> O brilho acompanha a <b>potência</b>, e a potência numa carga resistiva é
+proporcional ao <b>quadrado do valor eficaz</b>: P = V<sub>rms</sub>²/R. É por isso que o brilho não cai
+proporcionalmente ao ângulo — ele cai muito mais depressa. Entre α = 25° e α = 112° o valor eficaz caiu apenas
+pela metade (125,6&nbsp;V → 64,9&nbsp;V), mas a potência caiu para um quarto (98&nbsp;% → 26&nbsp;%). Em outras palavras:
+<b>quanto maior o atraso no disparo, menor a "fatia" de onda entregue à carga, e o brilho cai com o quadrado
+dessa redução</b>. O controle é sempre mais sensível na região central do curso (α próximo de 90°), onde a derivada
+da curva de potência é máxima — comportamento típico de qualquer dimmer por ângulo de fase.</p>
+<p><b>Observação de engenharia.</b> O "fatiamento" da onda não é gratuito: o degrau abrupto de corrente a cada
+disparo é rico em <b>harmônicos ímpares</b> (3º, 5º, 7º…) que retornam para a rede, e o dv/dt elevado gera
+interferência eletromagnética. Por isso dimmers comerciais trazem sempre um <b>filtro de EMI</b> — tipicamente um
+indutor em série com a carga e um capacitor de classe X — que o circuito didático desta prática não inclui.</p>
+
+<h2>6. Links dos circuitos para conferência</h2>
+<p>Os dois links abaixo abrem o circuito já montado e em execução no Falstad. São os dois circuitos exigidos pela
+atividade.</p>
+
+<div class="link">
+<div class="t">CIRCUITO 1 — Parte A: Chave Estática CA (liga/desliga)</div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEAmSIFrADjRgUAG7iQIBs6yWxZKA7MlOCKZjo2jAnthGCecnrhkpACx0GaAMxximVFGjiYovAHdhYieCkttkPKnJhdaQQxNgGCSu1gQYcLBdkAzAIYAbAM4BTddTkNlRgJkG2BhqhuhQhprFQeADmOnrBqbiiyoTgYQnR5KJSkoyiuOyKXN65MUUWyMUgdRUePv4ATsKNzSa2zZhweAD2TI1mAJzYtOBsnIwWIFLDi4slyJNY09gc0EgQDFKLeEA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEAmSIFrADjRgUAG7iQIBs6yWxZKA7MlOCKZjo2jAnthGCecnrhkpACx0GaAMxximVFGjiYovAHdhYieCkttkPKnJhdaQQxNgGCSu1gQYcLBdkAzAIYAbAM4BTddTkNlRgJkG2BhqhuhQhprFQeADmOnrBqbiiyoTgYQnR5KJSkoyiuOyKXN65MUUWyMUgdRUePv4ATsKNzSa2zZhweAD2TI1mAJzYtOBsnIwWIFLDi4slyJNY09gc0EgQDFKLeEA</a></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Abre com a chave <b>fechada</b> (lâmpada acesa). Um clique sobre a chave alterna entre aberta e fechada.</div>
+</div>
+
+<div class="link">
+<div class="t">CIRCUITO 2 — Parte B: Controle de Potência (dimmer com DIAC)</div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEAmSIFrADjRgUAG7iQIBs6yWxZKA7MlOCKZjo2jAnthGCecnrhkpACx0GaAMxximVFGjiYovAHdhYieCkttkPKnJhdaQQxNgGCSu1gQYcLBdkAzAIYAbAM4BTddTkNlRWWsFQAaHi4SZ64QYA5jpxtrG4osp4AE6a4ua5IFK6jHzw3LTiUYXFVlIMonWMyBjwirQgAEq+3gCW3gAu7gB2AMb+GrUMUliVyI1F5AYTc1M1IuILESMFDRbrFFQcsPBwDoaQUjuNJra7jC1yJ7IyipBgeAD2TI1mAJzY7WwRyQZm+n3AEB+KH+WHaGFeSF4eCAA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEAmSIFrADjRgUAG7iQIBs6yWxZKA7MlOCKZjo2jAnthGCecnrhkpACx0GaAMxximVFGjiYovAHdhYieCkttkPKnJhdaQQxNgGCSu1gQYcLBdkAzAIYAbAM4BTddTkNlRWWsFQAaHi4SZ64QYA5jpxtrG4osp4AE6a4ua5IFK6jHzw3LTiUYXFVlIMonWMyBjwirQgAEq+3gCW3gAu7gB2AMb+GrUMUliVyI1F5AYTc1M1IuILESMFDRbrFFQcsPBwDoaQUjuNJra7jC1yJ7IyipBgeAD2TI1mAJzY7WwRyQZm+n3AEB+KH+WHaGFeSF4eCAA</a></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">O cursor <b>Resistance</b>, na barra lateral direita, ajusta o potenciômetro de 250&nbsp;kΩ e varia o brilho de forma contínua.</div>
+</div>
+
+<h2>7. Conclusão</h2>
+<p>Os dois circuitos exigidos foram montados e simulados com êxito, e as medições confirmam quantitativamente o
+comportamento esperado do TRIAC.</p>
+<p>Na <b>Parte A</b> o TRIAC atuou como chave estática: comandado por apenas 5&nbsp;V e 25&nbsp;mA, controlou uma carga de
+127&nbsp;V com queda em condução de 0,79&nbsp;V<sub>rms</sub> — menos de 0,7&nbsp;% da tensão do circuito — entregando à
+lâmpada a <b>onda senoidal completa</b>, o que comprova a condução bidirecional. O desligamento evidenciou a
+<b>comutação natural</b>: aberta a chave, a condução só cessa na passagem da corrente por zero.</p>
+<p>Na <b>Parte B</b>, trocando o comando manual pela rede RC com DIAC, o mesmo TRIAC passou de interruptor a
+<b>controlador de potência</b>. Variando o potenciômetro obteve-se uma faixa contínua de <b>98&nbsp;% até 0&nbsp;%</b> da
+potência, com ângulos de disparo de 25° a 135°, confirmando que o DIAC trava o disparo sempre no mesmo limiar de
+30&nbsp;V e que o que o potenciômetro controla é o <b>tempo</b> até esse limiar.</p>
+<p>A comparação entre as duas montagens deixa clara a diferença conceitual: a <b>chave estática</b> opera em dois
+estados (tudo ou nada, α&nbsp;=&nbsp;0° ou TRIAC bloqueado), enquanto o <b>controle de potência por ângulo de fase</b>
+aproveita justamente a propriedade de engate do tiristor para escolher, a cada semiciclo, <i>quanto</i> da onda será
+entregue à carga.</p>
+
+<h2>Apêndice — Netlists dos circuitos</h2>
+<p style="font-size:9pt">Texto exportável pelo Falstad (<i>File &gt; Import from Text</i>), reproduzido aqui para documentação:</p>
+<h3 style="font-size:9.6pt">Parte A</h3>
+<pre class="mono" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0 0 10px">$ 1 0.000005 20 50 180 50
+v 1056 528 1056 272 0 1 60 180 0 0 0.5
+181 1056 272 1264 272 0 300 100 120 0.4 0.4
+w 1264 272 1360 272 0
+206 1360 272 1312 528 0 0.01 0.0082 100 false
+w 1056 528 1136 528 0
+w 1136 528 1360 528 0
+g 1360 528 1360 544 0
+v 1136 528 1136 432 0 0 40 5 0 0 0.5
+s 1136 432 1232 432 0 0 false
+r 1232 432 1328 432 0 100
+o 1 32 0 29187 180 0.5 0 2 1 3
+o 3 32 0 29187 180 0.5 1 2 3 3</pre>
+<h3 style="font-size:9.6pt">Parte B</h3>
+<pre class="mono" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0">$ 1 0.000005 20 50 180 50
+v 1056 528 1056 272 0 1 60 180 0 0 0.5
+181 1056 272 1264 272 0 300 100 120 0.4 0.4
+w 1264 272 1360 272 0
+206 1360 272 1312 528 0 0.01 0.0082 100 false
+w 1056 528 1264 528 0
+w 1264 528 1360 528 0
+g 1360 528 1360 544 0
+r 1264 272 1264 336 0 10000
+174 1264 336 1232 432 0 250000 0.7 Resistance
+w 1232 384 1232 336 0
+w 1232 336 1264 336 0
+c 1264 432 1264 528 0 0.0000001 0
+203 1264 432 1328 432 0 500 100000000 30 0.01
+o 1 32 0 29187 180 0.5 0 2 1 3
+o 11 32 0 29187 50 0.05 1 1</pre>
+
+</body></html>
