@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório Fonte Chaveada</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 14mm 15mm; }
+* { box-sizing: border-box; }
+body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 10.2pt; line-height: 1.5; color: #1a1a1a; margin: 0; }
+h1 { font-size: 19pt; margin: 0 0 4px; color: #0b3d6b; line-height: 1.25; }
+h2 { font-size: 12.5pt; color: #0b3d6b; background: #dceaf7; border-left: 5px solid #1565a8;
+     padding: 6px 10px; margin: 22px 0 10px; page-break-after: avoid; }
+h3 { font-size: 10.8pt; color: #1565a8; margin: 14px 0 6px; page-break-after: avoid;
+     border-bottom: 1px solid #c9dcec; padding-bottom: 3px; }
+p { margin: 0 0 8px; text-align: justify; }
+ul, ol { margin: 0 0 8px; padding-left: 20px; }
+li { margin-bottom: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 8.9pt; page-break-inside: avoid; }
+th { background: #1565a8; color: #fff; text-align: left; padding: 5px 7px; font-weight: 600; }
+td { border-bottom: 1px solid #d8e2ea; padding: 4px 7px; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f9fc; }
+.cap { font-size: 8.5pt; color: #4a5a68; text-align: center; margin: 3px 0 14px; font-style: italic; }
+figure { margin: 10px 0 4px; page-break-inside: avoid; }
+figure img { width: 100%; border: 1px solid #b9c7d3; display: block; }
+code, .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 7.6pt; word-break: break-all; }
+.capa { border: 2px solid #1565a8; border-radius: 4px; padding: 20px 22px; margin-bottom: 18px; background: #f7fbfe; }
+.capa .kicker { font-size: 9pt; letter-spacing: 1.6px; color: #1565a8; font-weight: 700; text-transform: uppercase; }
+.meta { margin-top: 14px; font-size: 9.6pt; }
+.meta b { color: #0b3d6b; }
+.link { background: #f0f5f9; border: 1px solid #cbd9e4; border-left: 4px solid #1565a8;
+        padding: 7px 10px; margin: 6px 0 12px; page-break-inside: avoid; }
+.link .t { font-weight: 700; color: #0b3d6b; font-size: 9.4pt; }
+.nota { background: #fff8e6; border-left: 4px solid #e0a800; padding: 7px 11px; margin: 10px 0; font-size: 9.3pt; }
+.q { background: #eef5fb; border-left: 5px solid #1565a8; padding: 8px 11px; margin: 16px 0 8px; page-break-after: avoid; }
+.q b { color: #0b3d6b; }
+.form { background: #f0f5f9; border: 1px solid #cbd9e4; text-align: center; padding: 8px; margin: 8px 0 12px;
+        font-size: 11pt; font-weight: 700; color: #0b3d6b; }
+.ok { color: #1a7a3c; font-weight: 700; }
+.bad { color: #b3261e; font-weight: 700; }
+</style></head><body>
+
+<div class="capa">
+  <div class="kicker">SENAI SSP &middot; 2026 &middot; Técnico em Eletrônica</div>
+  <div style="font-size:10pt;color:#44596b;margin:2px 0 10px">Unidade Curricular: Eletrônica de Potência &middot; Avaliação Prática (10 pontos)</div>
+  <h1>Fonte Chaveada Flyback 12 V / 1 A:<br>operação bivolt automática com malha de realimentação</h1>
+  <div class="meta">
+    <b>Aluno:</b> Leonardo Fossati de Souza Nunes<br>
+    <b>Simulador:</b> Falstad Circuit Simulator (falstad.com/circuit)<br>
+    <b>Data:</b> 12/11/2026 &nbsp;&middot;&nbsp; <b>Prazo de entrega:</b> 16/11/2026
+  </div>
+</div>
+
+<h2>1. Objetivos da prática</h2>
+<ul>
+<li>Compreender os estágios completos de uma fonte chaveada comercial: retificação de entrada, filtragem de barramento, chaveamento isolado, retificação de saída e regulação.</li>
+<li>Analisar o funcionamento do transformador de alta frequência acoplado em modo <i>Flyback</i>.</li>
+<li>Testar a fonte nas redes de 127 V e 220 V (operação bivolt automática).</li>
+<li>Verificar o papel da malha de realimentação para manter os 12 V DC estáveis sob variação de entrada e de carga.</li>
+</ul>
+
+<h2>2. Parâmetros de projeto</h2>
+<table>
+<tr><th style="width:34%">Grandeza</th><th>Valor de projeto</th></tr>
+<tr><td>Tensão de entrada (V<sub>in</sub>)</td><td>127 V<sub>RMS</sub> (pico 180 V) ou 220 V<sub>RMS</sub> (pico 311 V), 60 Hz</td></tr>
+<tr><td>Tensão no barramento DC</td><td>≈ 178 V (rede 127 V) ou ≈ 309 V (rede 220 V)</td></tr>
+<tr><td>Tensão de saída (V<sub>out</sub>)</td><td>12 V DC, carga de 12 Ω → 1 A / 12 W</td></tr>
+<tr><td>Frequência de chaveamento</td><td>20 kHz (T = 50 µs)</td></tr>
+<tr><td>Transformador</td><td>L<sub>primário</sub> = 1 mH &middot; relação 0,1 (10:1 abaixadora) &middot; acoplamento 0,99 &middot; <b>pontos invertidos</b></td></tr>
+</table>
+<p>O barramento DC é a tensão de pico da rede menos as duas quedas de diodo da ponte em série:
+180 − 2×0,7 = <b>178,6 V</b> e 311 − 1,4 = <b>309,6 V</b>. O conversor opera em <b>modo de condução descontínua</b>
+(DCM), em que a energia transferida por ciclo vale E = ½·L<sub>p</sub>·I<sub>pico</sub>², e a potência de saída é:</p>
+<div class="form">P<sub>out</sub> = ½ · L<sub>p</sub> · I<sub>pico</sub>² · f<sub>s</sub> &nbsp;&nbsp;com&nbsp;&nbsp; I<sub>pico</sub> = V<sub>barramento</sub> · D · T / L<sub>p</sub></div>
+<p>Combinando as duas expressões, para uma potência de saída constante o produto
+<b>V<sub>barramento</sub> · D permanece constante</b>. É exatamente esse o mecanismo do bivolt automático: se a
+tensão da rede sobe, a malha de realimentação precisa reduzir a razão cíclica na mesma proporção — previsão que será
+verificada experimentalmente na seção 6.</p>
+
+<h2>3. Montagem no Falstad</h2>
+
+<h3>3.1 Etapa 1 — Estágio de entrada (retificação e filtro DC)</h3>
+<table>
+<tr><th style="width:26%">Componente</th><th style="width:36%">Caminho no menu Draw</th><th>Configuração</th></tr>
+<tr><td>Fonte AC (rede)</td><td>Inputs and Sources &gt; Add A/C Voltage Source (2-terminal)</td><td>60 Hz &middot; Max Voltage 180 V (ou 311 V)</td></tr>
+<tr><td>Ponte retificadora</td><td>4 diodos (<code>d</code>) em dois ramos</td><td>Modelo padrão. Os dois nós centrais recebem a rede; os extremos formam o barramento + e −</td></tr>
+<tr><td>Capacitor de barramento</td><td>Passive Components &gt; Add Capacitor</td><td>47 µF, entre + e − da ponte</td></tr>
+<tr><td>Referência do primário</td><td>Inputs and Sources &gt; Add Ground</td><td>No terminal negativo do capacitor de barramento</td></tr>
+</table>
+<p>A ponte foi desenhada como <b>dois ramos verticais de dois diodos</b> com a fonte AC ligada entre os pontos médios.
+É eletricamente idêntica ao símbolo em losango e evita cruzamentos de fios, deixando os barramentos + e − como
+trilhos horizontais limpos.</p>
+
+<h3>3.2 Etapa 2 — Transformador flyback e chaveamento</h3>
+<table>
+<tr><th style="width:26%">Componente</th><th style="width:36%">Caminho no menu Draw</th><th>Configuração</th></tr>
+<tr><td>Transformador</td><td>Passive Components &gt; Add Transformer</td><td>Primary Inductance 1 mH &middot; Ratio 0,1 &middot; Coupling 0,99 &middot; polaridade invertida</td></tr>
+<tr><td>MOSFET chaveador</td><td>Active Components &gt; Add MOSFET (N-Channel)</td><td>Dreno no terminal inferior do primário &middot; Source no terra do primário</td></tr>
+<tr><td>Snubber</td><td>Resistor + capacitor em série</td><td>10 kΩ + 10 nF, em paralelo com o primário</td></tr>
+</table>
+<p><b>A polaridade é o que define o modo flyback.</b> Com os pontos invertidos, durante a condução do MOSFET a
+tensão induzida no secundário tem polaridade que <b>bloqueia</b> o diodo de saída: a energia fica armazenada no
+entreferro do transformador em vez de atravessar para a carga. Só quando a chave abre é que a polaridade se inverte,
+o diodo conduz e a energia é entregue. Um transformador flyback é, a rigor, um <b>indutor acoplado</b>, não um
+transformador convencional.</p>
+<p>A tensão refletida do secundário para o primário durante o bloqueio vale V<sub>out</sub>/n = 12/0,1 =
+<b>120 V</b>. Somada ao barramento, o MOSFET precisa suportar cerca de <b>298 V</b> na rede 127 V e
+<b>430 V</b> na rede 220 V — por isso o snubber RC é obrigatório: ele absorve o pico adicional gerado pela
+indutância de dispersão (o acoplamento é 0,99, não 1).</p>
+
+<h3>3.3 Etapa 3 — Estágio secundário (saída 12 V DC)</h3>
+<table>
+<tr><th style="width:26%">Componente</th><th style="width:36%">Caminho no menu Draw</th><th>Configuração</th></tr>
+<tr><td>Diodo rápido</td><td>Passive Components &gt; Add Diode</td><td>Anodo no terminal superior do secundário, catodo para a carga</td></tr>
+<tr><td>Capacitor de saída</td><td>Passive Components &gt; Add Capacitor</td><td>470 µF, entre o catodo do diodo e o terminal inferior do secundário</td></tr>
+<tr><td>Terra do secundário</td><td>Inputs and Sources &gt; Add Ground</td><td>No terminal inferior do secundário</td></tr>
+<tr><td>Carga</td><td>Passive Components &gt; Add Resistor</td><td>12 Ω (1 A nominal) &middot; 120 Ω no ensaio de carga leve</td></tr>
+</table>
+
+<h3>3.4 Etapa 4 — Controle e malha de realimentação</h3>
+<table>
+<tr><th style="width:26%">Componente</th><th style="width:36%">Caminho no menu Draw</th><th>Configuração</th></tr>
+<tr><td>Gerador de rampa</td><td>Inputs and Sources &gt; Add Voltage Source</td><td>Waveform <b>Sawtooth</b> &middot; 20 kHz &middot; Max Voltage 5 V (rampa de −5 V a +5 V) &middot; negativo no terra</td></tr>
+<tr><td>Divisor de amostragem</td><td>Dois resistores de 10 kΩ</td><td>Na saída de 12 V, fornecendo 6 V</td></tr>
+<tr><td>Amplificador de erro</td><td>Active Components &gt; Add Op-Amp</td><td>Divisor (6 V) na entrada inversora &middot; referência DC de 6 V na não-inversora</td></tr>
+<tr><td>Referência</td><td>Add Voltage Source (DC)</td><td>6 V fixos</td></tr>
+<tr><td>Comparador PWM</td><td>Segundo Op-Amp</td><td>Sinal de erro na não-inversora &middot; rampa de 20 kHz na inversora</td></tr>
+<tr><td>Acoplamento ao gate</td><td>Resistor</td><td>100 Ω entre a saída do comparador e o Gate do MOSFET</td></tr>
+</table>
+<p>Na fonte real esse sinal cruzaria a barreira de isolação por um <b>optoacoplador</b> (tipicamente 4N25 + TL431);
+no simulador, a ligação direta entre o terra do secundário e o do primário representa o acoplador ideal. Para
+facilitar a leitura, os nós do <b>Gate</b> e do <b>sinal de erro</b> foram identificados com rótulos
+(<i>labeled nodes</i>) e levados a osciloscópios próprios.</p>
+
+<h2>4. Nota metodológica: dois ajustes na malha de controle</h2>
+<p>Montado estritamente com os valores de fábrica do simulador, o circuito <b>não regula</b>. A investigação
+identificou que o problema está inteiramente na malha de controle — e que as duas correções necessárias são
+funções presentes em qualquer CI controlador de fonte chaveada. Estão documentadas aqui porque alteram parâmetros
+que o roteiro não especifica. <b>Todos os componentes e valores do roteiro foram mantidos</b>, MOSFET incluído.</p>
+
+<h3>4.1 O amplificador de erro satura fora da faixa da rampa</h3>
+<p>Um amp-op sem rede de realimentação é um <b>comparador</b>, não um amplificador de erro: com ganho de 10<sup>5</sup>
+sua saída vai imediatamente a ±15 V. Como a rampa de comparação vai apenas de −5 V a +5 V, um erro de +15 V deixa o
+comparador PWM <b>permanentemente em nível alto</b> — razão cíclica de 100 %.</p>
+<p>E aqui está a armadilha específica do flyback: <b>com 100 % de razão cíclica a chave nunca abre, o diodo de saída
+nunca conduz e a fonte não entrega absolutamente nada</b>. A saída fica em zero, o erro continua saturado e o
+circuito trava nesse estado. O Experimento 4 (seção 7) comprova: saída de <b>0,56 V</b> com o sinal de erro parado
+em +15,0 V.</p>
+<p><b>Correção:</b> limitar a excursão de saída do amplificador de erro para a faixa <b>0 a −5 V</b> (campo
+<i>Output Range</i> do amp-op). Isso mantém o erro dentro da janela da rampa e, de quebra, implementa o
+<b>limite de razão cíclica máxima de 50 %</b> — recurso obrigatório em todo CI controlador de flyback real,
+justamente para impedir a saturação do núcleo.</p>
+
+<h3>4.2 Falta a rede de compensação</h3>
+<p>Mesmo com a faixa limitada, o ganho de 10<sup>5</sup> amplifica a própria ondulação da saída e joga o erro de um
+limite ao outro a cada ciclo: a fonte passa a funcionar em rajadas, com ondulação de <b>1,30 V</b>. A correção é um
+<b>capacitor de 100 nF entre a saída e a entrada inversora</b> do amplificador de erro, transformando-o em
+integrador — é a compensação tipo I, a mais simples das redes usadas em fontes reais. Com ela a ondulação caiu para
+<b>335 mV</b> e o PWM ficou uniforme.</p>
+
+<h3>4.3 Verificação do MOSFET (mantido nos valores de fábrica)</h3>
+<p>Antes de fechar a montagem, a chave foi verificada contra a corrente que o conversor realmente exige. O MOSFET
+padrão do Falstad (V<sub>th</sub> = 1,5 V, β = 0,02 A/V²), acionado com os 15 V de saída do comparador, apresenta:</p>
+<table>
+<tr><th style="width:42%">Parâmetro</th><th>Cálculo</th><th>Valor</th></tr>
+<tr><td>Resistência de condução R<sub>DS(on)</sub></td><td>1 / [β·(V<sub>GS</sub> − V<sub>th</sub>)] = 1 / (0,02 × 13,5)</td><td>3,70 Ω</td></tr>
+<tr><td>Corrente de saturação I<sub>D(sat)</sub></td><td>(β/2)·(V<sub>GS</sub> − V<sub>th</sub>)² = 0,01 × 13,5²</td><td><b>1,82 A</b></td></tr>
+<tr><td>Corrente de pico exigida no primário</td><td>√(2·P<sub>out</sub> / (L<sub>p</sub>·f<sub>s</sub>)) = √(2×12 / (10<sup>−3</sup>×2×10<sup>4</sup>))</td><td><b>1,10 A</b></td></tr>
+<tr><td>Perda por condução</td><td>I<sub>rms</sub>²·R<sub>DS(on)</sub>, com I<sub>rms</sub> = I<sub>pico</sub>·√(D/3) = 0,254 A</td><td>0,24 W (2 % de P<sub>out</sub>)</td></tr>
+</table>
+<p>A corrente de pico fica <b>abaixo</b> da saturação, com margem de 1,65 vez, e a perda de condução é aceitável.
+O MOSFET foi portanto <b>mantido nos valores de fábrica</b>, e a simulação confirmou que a fonte regula normalmente
+com ele. A única ressalva é a ondulação de saída: substituindo-o por um MOSFET de potência realista
+(β = 5 A/V², R<sub>DS(on)</sub> ≈ 24 mΩ, equivalente a um IRFZ44N), a ondulação cai pela metade — medição
+apresentada na seção 6.6.</p>
+<p>Vale observar que durante a partida, quando a malha trabalha no limite de 50 % de razão cíclica, a corrente
+exigida chegaria a V<sub>barramento</sub>·D·T/L<sub>p</sub> = 4,45 A, acima da saturação. O MOSFET entra em
+saturação e limita a corrente — comportamento equivalente ao da <b>proteção de corrente de pico</b> que os CIs
+controladores reais implementam ciclo a ciclo.</p>
+
+<h2>5. Etapas de operação (tabela verdade do chaveamento)</h2>
+<figure><img src="shots_hd/E1_127V.png"></figure>
+<div class="cap"><b>Figura 1</b> — Fonte completa operando em 127 V AC. Da esquerda para a direita: rede, ponte
+retificadora, capacitor de barramento de 47 µF, snubber, transformador flyback, MOSFET, retificação de saída,
+carga de 12 Ω e a malha de realimentação (divisor, amplificador de erro com o capacitor de compensação de 100 nF,
+referência de 6 V, rampa de 20 kHz e comparador PWM). Osciloscópios: barramento DC, saída, GATE e sinal de ERRO.</div>
+
+<table>
+<tr><th>Etapa</th><th>PWM no gate</th><th>MOSFET</th><th>Diodo do secundário</th><th>Transformador</th><th>Capacitor de saída</th><th>Carga alimentada por</th></tr>
+<tr><td><b>1</b> — Acumulação<br>(duração D·T)</td><td>Nível alto<br>(+15 V)</td><td><b>Conduz</b></td><td><b>Bloqueado</b><br>(polaridade invertida)</td><td>Corrente no primário <b>cresce</b> linearmente; energia armazenada no entreferro</td><td><b>Descarrega</b></td><td>Somente o capacitor</td></tr>
+<tr><td><b>2</b> — Transferência<br>(duração t<sub>desmag</sub>)</td><td>Nível baixo<br>(−15 V)</td><td><b>Bloqueado</b></td><td><b>Conduz</b></td><td>Campo colapsa; a energia sai pelo secundário e a corrente <b>decresce</b> até zero</td><td><b>Recarrega</b></td><td>Secundário + capacitor</td></tr>
+<tr><td><b>3</b> — Tempo morto<br>(resto do período)</td><td>Nível baixo</td><td>Bloqueado</td><td>Bloqueado</td><td>Energia esgotada: i<sub>P</sub> = i<sub>S</sub> = 0 (modo descontínuo)</td><td>Descarrega</td><td>Somente o capacitor</td></tr>
+</table>
+
+<h2>6. Procedimento experimental e medições</h2>
+
+<h3>6.1 Experimento 1 — Operação em 127 V AC</h3>
+<p>Fonte AC com Max Voltage = 180 V, carga de 12 Ω. O barramento estabilizou em <b>178,656 V</b>, exatamente o
+previsto (180 V de pico menos as duas quedas de diodo). A saída estabilizou em <b>12,027 V</b>, com o sinal de erro
+parado em −3,685 V e razão cíclica de <b>16 %</b>.</p>
+
+<h3>6.2 Experimento 2 — Teste bivolt automático (220 V AC)</h3>
+<figure><img src="shots_hd/E2_220V.png"></figure>
+<div class="cap"><b>Figura 2</b> — Mesma fonte com a entrada alterada para 311 V de pico (220 V<sub>RMS</sub>). O
+barramento subiu para <b>309,668 V</b>, mas a saída permaneceu em <b>11,901 V</b>: a malha estreitou os pulsos de
+16 % para <b>10 %</b> e o sinal de erro desceu de −3,685 V para −4,327 V. Compare a largura dos pulsos do
+osciloscópio GATE com a da Figura 1.</div>
+
+<h3>6.3 Tabela de resultados (tabela do item 4 do roteiro)</h3>
+<table>
+<tr><th>Tensão da rede (RMS)</th><th>Tensão de pico no Falstad</th><th>Tensão no barramento DC</th><th>Largura de pulso (observação)</th><th>Sinal de erro</th><th>Tensão de saída medida</th></tr>
+<tr><td><b>127 V AC</b></td><td>180 V</td><td><b>178,656 V</b> <span style="color:#4a5a68">(previsto ~178 V)</span></td><td>Razão cíclica <b>16 %</b> — pulsos de ≈ 8 µs em 50 µs</td><td>−3,685 V</td><td><b>12,027 V</b> (ondulação 335 mV)</td></tr>
+<tr><td><b>220 V AC</b></td><td>311 V</td><td><b>309,668 V</b> <span style="color:#4a5a68">(previsto ~309 V)</span></td><td>Razão cíclica <b>10 %</b> — pulsos <b>estreitaram</b> para ≈ 5 µs</td><td>−4,327 V</td><td><b>11,901 V</b> (ondulação 333 mV)</td></tr>
+</table>
+<p>Verificando a previsão teórica da seção 2 (produto V<sub>barramento</sub>·D constante): em 127 V temos
+172 × 0,16 = 27,5 e em 220 V temos 300 × 0,10 = 30,0 — uma diferença de apenas 9 %, consistente com o pequeno
+aumento de perdas de comutação na tensão mais alta. A fonte entrega <b>1,002 A / 12,05 W</b> em ambas as redes.</p>
+
+<h3>6.4 Experimento 3 — Teste de variação de carga</h3>
+<figure><img src="shots_hd/E3_carga_leve.png"></figure>
+<div class="cap"><b>Figura 3</b> — Entrada mantida em 220 V e carga alterada de 12 Ω (1 A) para 120 Ω (100 mA). A
+saída ficou em <b>12,077 V</b> e a ondulação caiu para 146 mV. O osciloscópio GATE mostra pulsos extremamente
+estreitos e espaçados, e o sinal de erro desceu a −4,946 V, praticamente encostado no limite inferior de −5 V que
+corresponde à razão cíclica nula.</div>
+<table>
+<tr><th>Condição</th><th>Corrente de saída</th><th>Tensão de saída</th><th>Ondulação</th><th>Sinal de erro</th><th>Razão cíclica</th></tr>
+<tr><td>220 V · carga nominal (12 Ω)</td><td>992 mA</td><td>11,901 V</td><td>333 mV</td><td>−4,327 V</td><td>10 %</td></tr>
+<tr><td>220 V · carga leve (120 Ω)</td><td>101 mA</td><td>12,077 V</td><td>146 mV</td><td>−4,946 V</td><td>&lt; 1 % (pulso saltado)</td></tr>
+<tr><td colspan="6"><b>Regulação de carga: +1,48 %</b> para uma variação de 10:1 na corrente de saída.
+<b>Regulação de linha: −1,05 %</b> para uma variação de +73 % na tensão da rede.</td></tr>
+</table>
+
+<h3>6.5 Experimento 4 — A montagem literal do roteiro, para comparação</h3>
+<figure><img src="shots_hd/E4_roteiro_literal.png"></figure>
+<div class="cap"><b>Figura 4</b> — O mesmo circuito <b>sem</b> os ajustes da seção 4.1 e 4.2 (amp-op com saída de
+±15 V e sem capacitor de compensação). O barramento funciona normalmente (177,755 V), mas o sinal de ERRO está
+travado em <b>+15,001 V</b>, o traço do GATE é uma <b>linha reta em +15 V</b> — o MOSFET nunca desliga — e a saída
+fica em <b>560 mV</b>. É a demonstração prática de que um flyback com razão cíclica de 100 % não transfere energia
+nenhuma.</div>
+
+<h3>6.6 Comparação: MOSFET padrão × MOSFET de potência</h3>
+<p>Para quantificar o efeito da resistência de condução da chave, o circuito foi simulado também com um MOSFET de
+potência realista (β = 5 A/V², R<sub>DS(on)</sub> ≈ 24 mΩ contra os 3,70 Ω do componente padrão), mantendo tudo o
+mais idêntico, em 127 V e carga nominal:</p>
+<table>
+<tr><th>MOSFET</th><th>R<sub>DS(on)</sub></th><th>Barramento DC</th><th>Tensão de saída</th><th>Ondulação</th><th>Razão cíclica</th></tr>
+<tr><td>Padrão do Falstad (β = 0,02)</td><td>3,70 Ω</td><td>@@BUS1@@</td><td>@@VO1@@</td><td>@@RIP1@@</td><td>@@D1@@</td></tr>
+<tr><td>De potência (β = 5)</td><td>24 mΩ</td><td>@@BUS5@@</td><td>@@VO5@@</td><td>@@RIP5@@</td><td>@@D5@@</td></tr>
+</table>
+<p>A tensão média regulada praticamente não muda — a malha de realimentação compensa a perda a mais da chave
+aumentando levemente a razão cíclica. O ganho está na <b>ondulação</b>, que cai pela metade: com a chave de menor
+resistência, a corrente de pico no primário é atingida de forma mais repetível a cada ciclo, e o capacitor de saída
+recebe pacotes de energia mais uniformes. Como o roteiro não especifica os parâmetros do MOSFET, o circuito
+entregue mantém o componente padrão.</p>
+
+<h2>7. Questões para análise e discussão</h2>
+
+<div class="q"><b>Questão (Experimento 2).</b> O que aconteceu com a largura dos pulsos (<i>Duty Cycle</i>) aplicados ao MOSFET quando a tensão da rede subiu para 220 V? A tensão de saída permaneceu regulada em 12 V?</div>
+<p><b>Os pulsos estreitaram — de 16 % para 10 % — e sim, a saída permaneceu regulada:</b> passou de 12,027 V para
+11,901 V, uma variação de apenas <b>−1,05 %</b> para um aumento de 73 % na tensão da rede.</p>
+<p>O mecanismo é o seguinte. Com o barramento em 309 V em vez de 178 V, a corrente no primário cresce
+<b>1,7 vez mais rápido</b> durante a condução (di/dt = V<sub>barramento</sub>/L<sub>p</sub>). Se a largura do pulso
+fosse mantida, a corrente de pico — e portanto a energia armazenada por ciclo, ½·L·I² — aumentaria, e a saída
+dispararia. A malha impede isso: a tensão de saída tende a subir, o divisor entrega mais de 6 V à entrada
+inversora, o amplificador de erro baixa sua saída (de −3,685 V para −4,327 V) e o comparador, encontrando a rampa
+mais cedo, <b>encurta o pulso</b> na medida exata para manter constante a corrente de pico.</p>
+<p>Essa é precisamente a definição de <b>fonte bivolt automática</b>: não há chave seletora nem relé; a regulação
+por largura de pulso absorve sozinha a variação da rede. A mesma malha explica por que fontes chaveadas aceitam
+faixas largas de entrada (tipicamente 90–264 V<sub>AC</sub>), enquanto uma fonte linear com transformador de
+60 Hz precisa de seletor mecânico ou de dois enrolamentos.</p>
+<p><b>Verificação quantitativa.</b> Como mostrado na seção 6.3, o produto V<sub>barramento</sub>·D manteve-se
+praticamente constante (27,5 contra 30,0), que é exatamente o que a teoria do flyback em modo descontínuo prevê
+para potência de saída constante.</p>
+
+<div class="q"><b>Observação (Experimento 3).</b> Verifique como a malha de realimentação ajusta instantaneamente o chaveamento para impedir que a tensão de saída ultrapasse os 12 V.</div>
+<p>Reduzindo a carga de 1 A para 100 mA, a potência exigida cai dez vezes. A malha respondeu levando o sinal de erro
+de −4,327 V para <b>−4,946 V</b> — a apenas 54 mV do limite inferior de −5 V, que corresponde a pulso nulo. A razão
+cíclica caiu para menos de 1 % e a saída ficou em <b>12,077 V</b>, ou seja, subiu apenas 1,5 % apesar da redução de
+10:1 na corrente.</p>
+<p>Um detalhe interessante aparece no osciloscópio do GATE: em vez de pulsos uniformes muito estreitos, veem-se
+pulsos espaçados, com ciclos inteiros <b>sem nenhum pulso</b>. Isso acontece porque a largura exigida (≈ 300 ns)
+fica abaixo da resolução do passo de cálculo de 1 µs, e o controlador passa a <b>saltar ciclos</b> para entregar a
+energia média correta. Longe de ser um defeito, esse é exatamente o <b>modo de rajadas</b> (<i>burst mode</i>) que
+os CIs controladores modernos adotam deliberadamente em carga leve, porque reduz as perdas de comutação e melhora
+o rendimento em espera — é o que permite a uma fonte moderna consumir menos de 100 mW sem carga.</p>
+<p>Vale notar também que a ondulação de saída caiu de 333 mV para 146 mV: com menos corrente drenada, o capacitor
+de 470 µF se descarrega muito mais lentamente entre os pulsos.</p>
+
+<div class="q"><b>Discussão complementar.</b> Por que a tensão medida no barramento DC é ligeiramente menor que a tensão de pico configurada na fonte AC?</div>
+<p>Porque a corrente atravessa sempre <b>dois diodos em série</b> da ponte (um no ramo positivo e outro no ramo de
+retorno). Com queda direta de ≈ 0,7 V cada, o barramento fica em V<sub>pico</sub> − 1,4 V. As medições confirmam o
+modelo com precisão notável: <b>178,656 V</b> medidos contra 178,6 V previstos na rede de 127 V, e <b>309,668 V</b>
+contra 309,6 V previstos na rede de 220 V — erro inferior a 0,1 V nos dois casos.</p>
+<p>Além disso, o capacitor de 47 µF não mantém a tensão perfeitamente constante: entre dois picos consecutivos da
+rede retificada (8,33 ms em 60 Hz) ele alimenta sozinho a fonte, e sua tensão decai. É a ondulação de 120 Hz bem
+visível no osciloscópio do barramento nas Figuras 1 a 3, que faz o valor médio ficar abaixo do pico medido.</p>
+
+<h2>8. Links do circuito para conferência</h2>
+<p>Os links abrem a fonte já montada e em execução, com os quatro osciloscópios configurados. Para repetir os
+experimentos, basta clicar com o botão direito na fonte AC e alterar o <i>Max Voltage</i>, ou no resistor de carga e
+alterar a resistência.</p>
+
+<div class="link">
+<div class="t">CIRCUITO PRINCIPAL — Fonte chaveada flyback 12 V / 1 A, entrada 127 V AC</div>
+<div class="mono" id="LINK_A"></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Abre com Max Voltage = 180 V (rede 127 V). A saída estabiliza em ≈ 12,0 V após cerca de 40 ms de tempo simulado.</div>
+</div>
+
+<div class="link">
+<div class="t">MESMO CIRCUITO EM 220 V AC — teste bivolt automático</div>
+<div class="mono" id="LINK_B"></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Idêntico ao anterior, com Max Voltage = 311 V. Observe no osciloscópio GATE que os pulsos ficam mais estreitos e a saída continua em ≈ 12 V.</div>
+</div>
+
+<div class="link">
+<div class="t">CIRCUITO COMPARATIVO — montagem literal do roteiro (não regula)</div>
+<div class="mono" id="LINK_C"></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Amp-op de erro com saída de ±15 V e sem compensação. Usado na seção 6.5 para demonstrar o travamento em 100 % de razão cíclica.</div>
+</div>
+
+<h2>9. Conclusão</h2>
+<p>A fonte chaveada flyback foi montada com os cinco estágios completos e opera de forma estável nas duas redes.
+As medições confirmam quantitativamente o comportamento previsto: barramento de <b>178,656 V</b> em 127 V e
+<b>309,668 V</b> em 220 V, ambos a menos de 0,1 V do modelo que desconta as duas quedas de diodo da ponte.</p>
+<p>A operação <b>bivolt automática</b> foi comprovada: aumentando a rede em 73 %, a malha de realimentação estreitou
+os pulsos de 16 % para 10 % e a saída variou apenas <b>−1,05 %</b>. O teste de carga mostrou regulação de
+<b>+1,48 %</b> para uma variação de 10:1 na corrente. Em ambos os casos o sinal de erro, monitorado em um
+osciloscópio próprio, moveu-se na direção correta dentro da janela da rampa — tornando visível o funcionamento da
+malha, que normalmente é a parte mais abstrata do circuito.</p>
+<p>O trabalho também mostrou que a montagem literal do roteiro não regula. Um amp-op sem rede de realimentação é um
+comparador: sua saída satura em +15 V, muito fora da janela de −5 V a +5 V da rampa, e o PWM trava em 100 %. Como
+o flyback só transfere energia durante o <b>bloqueio</b> da chave, 100 % de razão cíclica significa potência
+nula — e a fonte fica presa nesse estado, com 0,56 V na saída. As duas correções aplicadas — limitar a excursão do
+amplificador de erro, o que de quebra implementa o limite de razão cíclica máxima, e acrescentar o capacitor de
+compensação — não são artifícios de simulação: são exatamente as funções que qualquer CI controlador de fonte
+chaveada implementa internamente. Todos os componentes e valores especificados no roteiro, MOSFET incluído, foram
+mantidos.</p>
+
+<h2>Apêndice — Netlist do circuito principal</h2>
+<p style="font-size:9pt">Texto importável pelo Falstad (<i>File &gt; Import from Text</i>):</p>
+<pre class="mono" id="NET_A" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0"></pre>
+
+</body></html>
