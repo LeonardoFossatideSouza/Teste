@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório Conversor Boost</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 14mm 15mm; }
+* { box-sizing: border-box; }
+body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 10.2pt; line-height: 1.5; color: #1a1a1a; margin: 0; }
+h1 { font-size: 19pt; margin: 0 0 4px; color: #0b3d6b; line-height: 1.25; }
+h2 { font-size: 12.5pt; color: #0b3d6b; background: #dceaf7; border-left: 5px solid #1565a8;
+     padding: 6px 10px; margin: 22px 0 10px; page-break-after: avoid; }
+h3 { font-size: 10.8pt; color: #1565a8; margin: 14px 0 6px; page-break-after: avoid;
+     border-bottom: 1px solid #c9dcec; padding-bottom: 3px; }
+p { margin: 0 0 8px; text-align: justify; }
+ul, ol { margin: 0 0 8px; padding-left: 20px; }
+li { margin-bottom: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 8.9pt; page-break-inside: avoid; }
+th { background: #1565a8; color: #fff; text-align: left; padding: 5px 7px; font-weight: 600; }
+td { border-bottom: 1px solid #d8e2ea; padding: 4px 7px; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f9fc; }
+.cap { font-size: 8.5pt; color: #4a5a68; text-align: center; margin: 3px 0 14px; font-style: italic; }
+figure { margin: 10px 0 4px; page-break-inside: avoid; }
+figure img { width: 100%; border: 1px solid #b9c7d3; display: block; }
+code, .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 7.6pt; word-break: break-all; }
+.capa { border: 2px solid #1565a8; border-radius: 4px; padding: 20px 22px; margin-bottom: 18px; background: #f7fbfe; }
+.capa .kicker { font-size: 9pt; letter-spacing: 1.6px; color: #1565a8; font-weight: 700; text-transform: uppercase; }
+.meta { margin-top: 14px; font-size: 9.6pt; }
+.meta b { color: #0b3d6b; }
+.link { background: #f0f5f9; border: 1px solid #cbd9e4; border-left: 4px solid #1565a8;
+        padding: 7px 10px; margin: 6px 0 12px; page-break-inside: avoid; }
+.link .t { font-weight: 700; color: #0b3d6b; font-size: 9.4pt; }
+.nota { background: #fff8e6; border-left: 4px solid #e0a800; padding: 7px 11px; margin: 10px 0; font-size: 9.3pt; }
+.q { background: #eef5fb; border-left: 5px solid #1565a8; padding: 8px 11px; margin: 16px 0 8px; page-break-after: avoid; }
+.q b { color: #0b3d6b; }
+.form { background: #f0f5f9; border: 1px solid #cbd9e4; text-align: center; padding: 8px; margin: 8px 0 12px;
+        font-size: 11pt; font-weight: 700; color: #0b3d6b; }
+.ok { color: #1a7a3c; font-weight: 700; }
+.bad { color: #b3261e; font-weight: 700; }
+</style></head><body>
+
+<div class="capa">
+  <div class="kicker">SENAI SSP &middot; 2026 &middot; Técnico em Eletrônica</div>
+  <div style="font-size:10pt;color:#44596b;margin:2px 0 10px">Unidade Curricular: Eletrônica de Potência &middot; Avaliação Prática (5 pontos)</div>
+  <h1>Conversor DC/DC Step-Up (Boost):<br>regulação da tensão de saída por razão cíclica</h1>
+  <div class="meta">
+    <b>Aluno:</b> Leonardo Fossati de Souza Nunes<br>
+    <b>Simulador:</b> Falstad Circuit Simulator (falstad.com/circuit)<br>
+    <b>Data:</b> 12/11/2026 &nbsp;&middot;&nbsp; <b>Prazo de entrega:</b> 16/11/2026
+  </div>
+</div>
+
+<h2>1. Objetivos da prática</h2>
+<ul>
+<li>Montar e simular um conversor DC/DC elevador (Boost) com componentes discretos no Falstad.</li>
+<li>Verificar experimentalmente a relação entre a razão cíclica do PWM e a tensão de saída.</li>
+<li>Observar no osciloscópio as duas etapas de operação do conversor e as formas de onda de tensão e corrente no indutor, na carga e no gerador PWM.</li>
+<li>Quantificar o desvio entre o modelo ideal e o circuito simulado, e investigar o efeito da frequência de chaveamento e da retirada da carga.</li>
+</ul>
+
+<h2>2. Fundamentação teórica</h2>
+<p>Em Modo de Condução Contínua (CCM), a tensão média de saída de um conversor Boost <b>ideal</b> depende apenas da
+tensão de entrada e da razão cíclica <b>D</b> do sinal PWM aplicado à chave:</p>
+<div class="form">V<sub>out</sub> = V<sub>in</sub> / (1 − D)</div>
+<p>Essa expressão vem do <b>balanço de volt-segundo</b> no indutor: em regime permanente a área de tensão positiva
+sobre o indutor durante a condução da chave precisa ser igual à área negativa durante o bloqueio, isto é,
+V<sub>in</sub>·D·T = (V<sub>out</sub> − V<sub>in</sub>)·(1−D)·T. Para V<sub>in</sub> = 12 V e D = 50 %, a saída
+teórica é de <b>24 V</b>.</p>
+<p>Incluindo a queda direta do diodo (V<sub>D</sub> ≈ 0,7 V), que é a perda dominante neste circuito, o mesmo balanço
+de volt-segundo fornece um modelo mais realista que será comparado com as medições:</p>
+<div class="form">V<sub>out</sub> = V<sub>in</sub> / (1 − D) − V<sub>D</sub></div>
+<p>A ondulação (<i>ripple</i>) de tensão na saída é dada pela carga que o capacitor entrega sozinho à carga durante
+o intervalo de condução da chave:</p>
+<div class="form">ΔV<sub>out</sub> = I<sub>out</sub> · D / (C · f<sub>s</sub>)</div>
+
+<h2>3. Preparação do ambiente e montagem</h2>
+<p>O circuito foi montado a partir de uma área de trabalho limpa (<i>Circuits &gt; Blank Circuit</i>), com passo de
+cálculo de 5&nbsp;µs. Todas as medidas foram lidas diretamente dos osciloscópios do simulador, em regime
+permanente (t &gt; 2&nbsp;s de tempo simulado).</p>
+
+<h3>3.1 Lista de componentes</h3>
+<table>
+<tr><th style="width:24%">Componente</th><th style="width:38%">Caminho no menu Draw</th><th>Configuração</th></tr>
+<tr><td>Fonte de tensão DC</td><td>Inputs and Sources &gt; Add Voltage Source (2-terminal)</td><td>Waveform DC &middot; 12&nbsp;V &middot; terminal negativo no terra</td></tr>
+<tr><td>Indutor</td><td>Passive Components &gt; Add Inductor</td><td>10&nbsp;mH, em série com o polo positivo da fonte</td></tr>
+<tr><td>Chave controlada</td><td>Active Components &gt; Add MOSFET (N-Channel)</td><td>Dreno após o indutor &middot; Fonte no terra &middot; V<sub>th</sub> = 1,5&nbsp;V</td></tr>
+<tr><td>Gerador PWM</td><td>Inputs and Sources &gt; Add Square Wave Source</td><td>Square &middot; 1&nbsp;kHz &middot; Max Voltage 10&nbsp;V &middot; DC Offset 0&nbsp;V &middot; Duty Cycle 50&nbsp;%</td></tr>
+<tr><td>Diodo</td><td>Passive Components &gt; Add Diode</td><td>Anodo no nó indutor/dreno &middot; catodo para a saída</td></tr>
+<tr><td>Capacitor de filtro</td><td>Passive Components &gt; Add Capacitor</td><td>100&nbsp;µF, entre o catodo do diodo e o terra</td></tr>
+<tr><td>Resistor de carga</td><td>Passive Components &gt; Add Resistor</td><td>100&nbsp;Ω, em paralelo com o capacitor</td></tr>
+<tr><td>Terra (GND)</td><td>Inputs and Sources &gt; Add Ground</td><td>Referência de 0&nbsp;V</td></tr>
+</table>
+
+<div class="nota">
+<b>Observação sobre o gerador PWM.</b> Com <i>Max Voltage</i> = 10&nbsp;V e <i>DC Offset</i> = 0&nbsp;V, como pede o
+roteiro, a fonte quadrada do Falstad oscila entre <b>−10&nbsp;V e +10&nbsp;V</b> (e não entre 0 e 10&nbsp;V). Isso não
+altera o funcionamento: o MOSFET conduz sempre que V<sub>GS</sub> &gt; V<sub>th</sub> = 1,5&nbsp;V e fica bloqueado nos
+semiciclos negativos. A tensão negativa apenas garante um bloqueio ainda mais firme, prática comum em drivers de
+gate reais.
+</div>
+
+<h3>3.2 Instrumentação</h3>
+<p>Foram adicionadas pontas de prova no <b>indutor</b>, no <b>resistor de carga</b> e no <b>gerador PWM</b>
+(botão direito &gt; <i>View in New Scope</i>), resultando em três osciloscópios. No osciloscópio da carga foram
+habilitadas as leituras de <b>valor médio</b> e <b>pico a pico</b>, que fornecem diretamente V<sub>out</sub> e
+ΔV<sub>out</sub>.</p>
+
+<h2>4. Etapas de operação</h2>
+<figure><img src="shots_hd/C1_D050.png"></figure>
+<div class="cap"><b>Figura 1</b> — Conversor Boost em regime permanente com D = 50&nbsp;%. Osciloscópio da esquerda:
+tensão (verde) e corrente (amarelo) no indutor — a corrente é a rampa triangular característica do modo de condução
+contínua. Centro: tensão na carga, <b>23,097&nbsp;V de média</b> com ondulação de 1,167&nbsp;V. Direita: o PWM de
+1&nbsp;kHz, ±10&nbsp;V.</div>
+
+<h3>4.1 Tabela de estados (tabela verdade do chaveamento)</h3>
+<table>
+<tr><th>Etapa</th><th>PWM no gate</th><th>MOSFET</th><th>Diodo</th><th>Indutor</th><th>Capacitor</th><th>Carga é alimentada por</th></tr>
+<tr><td><b>1</b> — acumulação<br>(duração D·T)</td><td>Nível alto<br>(+10&nbsp;V)</td><td><b>Conduz</b><br>(curto para o terra)</td><td>Reversamente polarizado<br>(bloqueado)</td><td>v<sub>L</sub> = +V<sub>in</sub><br>corrente <b>cresce</b> linearmente<br>(armazena energia magnética)</td><td><b>Descarrega</b></td><td>Somente o capacitor</td></tr>
+<tr><td><b>2</b> — transferência<br>(duração (1−D)·T)</td><td>Nível baixo<br>(−10&nbsp;V)</td><td><b>Bloqueado</b></td><td><b>Conduz</b></td><td>v<sub>L</sub> = V<sub>in</sub> − V<sub>out</sub> − V<sub>D</sub> &lt; 0<br>corrente <b>decresce</b><br>(campo colapsa e a tensão se soma à fonte)</td><td><b>Recarrega</b></td><td>Fonte + indutor em série</td></tr>
+</table>
+<p>É a soma da tensão da fonte com a tensão induzida no indutor durante a Etapa 2 que produz a elevação: por isso a
+saída pode ultrapassar a tensão de entrada, e por isso a razão cíclica controla diretamente o ganho. Esse
+comportamento foi confirmado no osciloscópio do indutor, onde a tensão alterna entre
+<b>+12&nbsp;V</b> (Etapa 1) e um patamar negativo (Etapa 2).</p>
+
+<h2>5. Nota metodológica: a escolha do MOSFET</h2>
+<p>A primeira montagem usou o MOSFET com os parâmetros de fábrica do Falstad (V<sub>th</sub> = 1,5&nbsp;V,
+β = 0,02&nbsp;A/V²). Nessas condições o resultado em D = 75&nbsp;% ficou muito distante do previsto, e a investigação
+mostrou o motivo:</p>
+<table>
+<tr><th>Parâmetro do MOSFET padrão</th><th>Cálculo</th><th>Valor</th></tr>
+<tr><td>Resistência de condução R<sub>DS(on)</sub></td><td>1 / [β·(V<sub>GS</sub> − V<sub>th</sub>)] = 1 / [0,02 × 8,5]</td><td><b>5,88&nbsp;Ω</b></td></tr>
+<tr><td>Corrente de saturação I<sub>D(sat)</sub></td><td>(β/2)·(V<sub>GS</sub> − V<sub>th</sub>)² = 0,01 × 8,5²</td><td><b>0,72&nbsp;A</b></td></tr>
+<tr><td>Corrente exigida pelo circuito em D = 75&nbsp;%</td><td>V<sub>out</sub> / [R·(1−D)] = 48 / (100 × 0,25)</td><td><b>1,92&nbsp;A</b></td></tr>
+</table>
+<p>Ou seja: o MOSFET padrão do simulador <b>satura em 0,72&nbsp;A</b>, menos da metade da corrente que o conversor
+precisaria conduzir em D = 75&nbsp;%. Ele deixa de funcionar como chave e passa a se comportar como <b>limitador de
+corrente</b>, derrubando a saída. Um R<sub>DS(on)</sub> de 5,88&nbsp;Ω também não representa nenhum MOSFET de
+potência real — um IRFZ44N, por exemplo, tem cerca de 17&nbsp;mΩ.</p>
+<p>Por isso o relatório apresenta <b>dois circuitos</b>, ambos entregues como link:</p>
+<ul>
+<li><b>Circuito 1 (principal)</b> — idêntico ao roteiro, com o MOSFET editado para β = 5&nbsp;A/V², o que equivale a
+R<sub>DS(on)</sub> ≈ <b>24&nbsp;mΩ</b> e I<sub>D(sat)</sub> ≈ 180&nbsp;A, valores de um MOSFET de potência real. É o
+circuito que reproduz o comportamento descrito no roteiro (23&nbsp;V a 24&nbsp;V em D = 50&nbsp;%).</li>
+<li><b>Circuito 2 (comparativo)</b> — exatamente o mesmo circuito com o MOSFET nos parâmetros de fábrica, usado para
+quantificar as perdas de chaveamento e responder à Questão 1.</li>
+</ul>
+
+<h2>6. Roteiro de experimentos e tabela de resultados</h2>
+<p>A propriedade <i>Duty Cycle</i> da fonte de onda quadrada foi editada nos três valores pedidos. Para cada um,
+aguardou-se a estabilização da tensão na carga e registraram-se o valor médio e o pico a pico.</p>
+
+<h3>6.1 Tabela comparativa (tabela do item 6 do roteiro)</h3>
+<table>
+<tr><th>Razão cíclica (D)</th><th>V<sub>out</sub> teórico<br>= 12/(1−D)</th><th>V<sub>out</sub> medido<br><b>Circuito 1</b> (MOSFET de potência)</th><th>Ripple ΔV<sub>out</sub><br>Circuito 1</th><th>V<sub>out</sub> medido<br>Circuito 2 (MOSFET padrão)</th><th>Ripple ΔV<sub>out</sub><br>Circuito 2</th></tr>
+<tr><td><b>25&nbsp;%</b> (0,25)</td><td>16,0&nbsp;V</td><td><b>15,233&nbsp;V</b> (−4,8&nbsp;%)</td><td>504&nbsp;mV</td><td>14,810&nbsp;V (−7,4&nbsp;%)</td><td>470&nbsp;mV</td></tr>
+<tr><td><b>50&nbsp;%</b> (0,50)</td><td>24,0&nbsp;V</td><td><b>23,097&nbsp;V</b> (−3,8&nbsp;%)</td><td>1,167&nbsp;V</td><td>20,063&nbsp;V (−16,4&nbsp;%)</td><td>998&nbsp;mV</td></tr>
+<tr><td><b>75&nbsp;%</b> (0,75)</td><td>48,0&nbsp;V</td><td><b>46,868&nbsp;V</b> (−2,4&nbsp;%)</td><td>3,488&nbsp;V</td><td><span class="bad">16,488&nbsp;V</span> (−65,7&nbsp;%)</td><td>1,228&nbsp;V</td></tr>
+</table>
+
+<h3>6.2 Validação do modelo com a queda do diodo</h3>
+<p>Aplicando o modelo que desconta a queda direta do diodo, V<sub>out</sub> = 12/(1−D) − 0,7, chega-se a uma
+concordância quase perfeita com o Circuito 1 — o resíduo que sobra cresce com a corrente, como esperado da
+R<sub>DS(on)</sub> e da resistência dinâmica do diodo:</p>
+<table>
+<tr><th>D</th><th>Ideal: 12/(1−D)</th><th>Com queda do diodo: 12/(1−D) − 0,7</th><th>Medido (Circuito 1)</th><th>Resíduo</th><th>Ripple calculado<br>I<sub>out</sub>·D/(C·f)</th><th>Ripple medido</th></tr>
+<tr><td>25&nbsp;%</td><td>16,00&nbsp;V</td><td>15,30&nbsp;V</td><td>15,233&nbsp;V</td><td class="ok">0,07&nbsp;V</td><td>381&nbsp;mV</td><td>504&nbsp;mV</td></tr>
+<tr><td>50&nbsp;%</td><td>24,00&nbsp;V</td><td>23,30&nbsp;V</td><td>23,097&nbsp;V</td><td class="ok">0,20&nbsp;V</td><td>1,155&nbsp;V</td><td>1,167&nbsp;V</td></tr>
+<tr><td>75&nbsp;%</td><td>48,00&nbsp;V</td><td>47,30&nbsp;V</td><td>46,868&nbsp;V</td><td class="ok">0,43&nbsp;V</td><td>3,515&nbsp;V</td><td>3,488&nbsp;V</td></tr>
+</table>
+<p>O modelo de ripple acerta dentro de 1&nbsp;% em D = 50&nbsp;% e 75&nbsp;%. Em D = 25&nbsp;% a diferença é maior
+(504&nbsp;mV medidos contra 381&nbsp;mV calculados) porque, com a chave fechada por pouco tempo, a ondulação da
+corrente no indutor passa a contribuir de forma significativa para a ondulação do capacitor — efeito que a fórmula
+simplificada não considera.</p>
+
+<figure><img src="shots_hd/C1_D025.png"></figure>
+<div class="cap"><b>Figura 2</b> — Circuito 1 com <b>D = 25&nbsp;%</b>: 15,233&nbsp;V médios na carga (teórico 16,0&nbsp;V).
+Observe o PWM com pulsos estreitos e a corrente no indutor com rampa de subida curta.</div>
+
+<figure><img src="shots_hd/C1_D075.png"></figure>
+<div class="cap"><b>Figura 3</b> — Circuito 1 com <b>D = 75&nbsp;%</b>: 46,868&nbsp;V médios (teórico 48,0&nbsp;V). O
+PWM fica a maior parte do período em nível alto, a corrente média no indutor quadruplica e a ondulação de saída
+sobe para 3,488&nbsp;V.</div>
+
+<h3>6.3 O que acontece com o MOSFET de fábrica</h3>
+<figure><img src="shots_hd/C2_D075.png"></figure>
+<div class="cap"><b>Figura 4</b> — Circuito 2 (MOSFET padrão) em D = 75&nbsp;%: a saída <b>cai</b> para 16,488&nbsp;V em
+vez de subir para 48&nbsp;V. No osciloscópio do indutor a tensão durante a condução chega a apenas 7,106&nbsp;V — ou
+seja, quase 4,9&nbsp;V estão sendo perdidos dentro do MOSFET, que entrou em saturação e limita a corrente.</div>
+<p>A medição da tensão no indutor durante a Etapa 1 mostra diretamente quanto o MOSFET está "roubando" da fonte.
+Num conversor ideal esse valor deveria ser exatamente V<sub>in</sub> = 12&nbsp;V:</p>
+<table>
+<tr><th>Circuito</th><th>D</th><th>v<sub>L</sub> medido na Etapa 1</th><th>Queda sobre o MOSFET</th><th>Situação</th></tr>
+<tr><td>Circuito 2 (padrão)</td><td>25&nbsp;%</td><td>11,611&nbsp;V</td><td>0,389&nbsp;V</td><td>Região linear</td></tr>
+<tr><td>Circuito 2 (padrão)</td><td>50&nbsp;%</td><td>10,885&nbsp;V</td><td>1,115&nbsp;V</td><td>Região linear, perda já relevante</td></tr>
+<tr><td>Circuito 2 (padrão)</td><td>75&nbsp;%</td><td>7,106&nbsp;V</td><td><span class="bad">4,894&nbsp;V</span></td><td><b>Saturado</b> — vira fonte de corrente</td></tr>
+<tr><td><b>Circuito 1</b> (potência)</td><td>50&nbsp;%</td><td><b>11,996&nbsp;V</b></td><td class="ok">0,004&nbsp;V</td><td>Chave praticamente ideal</td></tr>
+</table>
+
+<h2>7. Experimentos complementares</h2>
+
+<h3>7.1 Efeito da frequência de chaveamento sobre o ripple</h3>
+<p>Mantendo L = 10&nbsp;mH, C = 100&nbsp;µF e D = 50&nbsp;%, a frequência do PWM foi alterada de 1&nbsp;kHz para
+10&nbsp;kHz. Para enxergar a ondulação foi adicionado um segundo osciloscópio na carga com <b>acoplamento AC</b>,
+que remove o nível DC de 23&nbsp;V e amplia a escala vertical.</p>
+<table>
+<tr><th>Frequência de chaveamento</th><th>V<sub>out</sub> médio</th><th>Ripple medido (pico a pico)</th><th>Ripple calculado</th><th>Escala do osciloscópio AC</th></tr>
+<tr><td>1&nbsp;kHz</td><td>23,097&nbsp;V</td><td><b>1,164&nbsp;V</b></td><td>1,155&nbsp;V</td><td>200&nbsp;mV/div</td></tr>
+<tr><td>10&nbsp;kHz</td><td>23,222&nbsp;V</td><td><b>105&nbsp;mV</b></td><td>116&nbsp;mV</td><td>20&nbsp;mV/div</td></tr>
+<tr><td colspan="5"><b>Redução medida: 11,1 ×</b> — a tensão média praticamente não mudou (+0,5 %).</td></tr>
+</table>
+
+<figure><img src="shots_hd/ripple_1kHz.png"></figure>
+<div class="cap"><b>Figura 5</b> — Ripple a <b>1&nbsp;kHz</b>. À esquerda a tensão de saída na escala normal; à direita
+a mesma tensão em acoplamento AC, revelando o dente de serra de <b>1,164&nbsp;V</b> pico a pico: a descida é a
+descarga do capacitor na carga (Etapa 1) e a subida é a recarga pelo indutor (Etapa 2).</div>
+
+<figure><img src="shots_hd/ripple_10kHz.png"></figure>
+<div class="cap"><b>Figura 6</b> — Ripple a <b>10&nbsp;kHz</b>. Mesmos L e C, mesma carga: a ondulação cai para
+<b>105&nbsp;mV</b> e a escala do osciloscópio precisou ser reduzida de 200&nbsp;mV/div para 20&nbsp;mV/div para que a
+forma de onda continuasse visível.</div>
+
+<h3>7.2 Conversor operando com a saída em aberto</h3>
+<p>O resistor de carga foi removido, mantendo o chaveamento ativo em D = 50&nbsp;%. A tensão no capacitor foi
+monitorada ao longo do tempo:</p>
+<table>
+<tr><th>Tempo de simulação</th><th>V<sub>out</sub> (tensão no capacitor)</th><th>Ripple</th><th>Comportamento</th></tr>
+<tr><td>151&nbsp;ms</td><td>91,5&nbsp;V</td><td>1,579&nbsp;V</td><td rowspan="3">Crescimento <b>monotônico</b>, sem estabilização</td></tr>
+<tr><td>388&nbsp;ms</td><td>133,7&nbsp;V</td><td>1,028&nbsp;V</td></tr>
+<tr><td>1,417&nbsp;s</td><td><b>239,3&nbsp;V</b></td><td>545&nbsp;mV</td></tr>
+</table>
+<figure><img src="shots_hd/sem_carga_t30000.png"></figure>
+<div class="cap"><b>Figura 7</b> — Saída em aberto após 1,4&nbsp;s de simulação: <b>239&nbsp;V</b> sobre um capacitor de
+100&nbsp;µF, e ainda subindo. A corrente no indutor (amarelo, osciloscópio da esquerda) acumula durante toda a Etapa 1
+e é despejada no capacitor em picos estreitos na Etapa 2.</div>
+
+<h2>8. Questões para análise e discussão</h2>
+
+<div class="q"><b>Questão 1.</b> Por que a tensão medida na saída do simulador é ligeiramente menor do que o valor calculado pela fórmula ideal?</div>
+<p>Porque a fórmula V<sub>out</sub> = V<sub>in</sub>/(1−D) descreve um conversor <b>ideal e sem perdas</b>: chave com
+resistência zero, diodo sem queda direta, indutor sem resistência série e capacitor sem ESR. No circuito simulado
+cada um desses elementos consome parte da tensão. Pelas medições, as causas em ordem de importância são:</p>
+<ol>
+<li><b>Queda direta do diodo (causa dominante).</b> Durante a Etapa 2 toda a corrente de saída atravessa o diodo,
+e a tensão que chega ao capacitor é a tensão do nó de comutação <b>menos</b> V<sub>D</sub> ≈ 0,7&nbsp;V. Refazendo o
+balanço de volt-segundo com essa queda, obtém-se V<sub>out</sub> = V<sub>in</sub>/(1−D) − V<sub>D</sub>. Esse modelo
+prevê 15,30 / 23,30 / 47,30&nbsp;V e as medições foram 15,233 / 23,097 / 46,868&nbsp;V — <b>um resíduo de apenas
+0,07 a 0,43&nbsp;V</b> (seção 6.2). Note que a queda do diodo é um valor <i>absoluto</i>: ela pesa 4,4&nbsp;% em
+D = 25&nbsp;% e apenas 1,5&nbsp;% em D = 75&nbsp;%, o que explica por que o erro percentual cai conforme D aumenta.</li>
+
+<li><b>Resistência de condução do MOSFET.</b> Durante a Etapa 1 o indutor não recebe V<sub>in</sub> inteiro, e sim
+V<sub>in</sub> − I<sub>L</sub>·R<sub>DS(on)</sub>. Menos volt-segundo acumulado significa menos energia transferida
+e saída menor. A medição direta da tensão no indutor comprova isso: 11,996&nbsp;V no Circuito 1
+(R<sub>DS(on)</sub> ≈ 24&nbsp;mΩ, perda desprezível) contra 10,885&nbsp;V no Circuito 2 em D = 50&nbsp;%
+(R<sub>DS(on)</sub> = 5,88&nbsp;Ω, 1,115&nbsp;V perdidos).</li>
+
+<li><b>Saturação da chave — o caso extremo.</b> No Circuito 2 em D = 75&nbsp;% o desvio deixa de ser "ligeiro": a
+saída cai para 16,5&nbsp;V contra 48&nbsp;V teóricos. O motivo não é mais perda resistiva, e sim que o MOSFET padrão
+satura em 0,72&nbsp;A enquanto o conversor exigiria 1,92&nbsp;A. A chave deixa de ser chave e vira limitador de
+corrente. Isso ilustra um ponto importante de projeto: <b>a fórmula ideal só vale enquanto a chave consegue conduzir
+a corrente exigida</b>, que no Boost cresce com 1/(1−D)².</li>
+
+<li><b>Perdas que o modelo não inclui, mas existem no mundo real.</b> Resistência ôhmica do enrolamento do indutor
+(DCR), perdas no núcleo magnético, ESR do capacitor eletrolítico e perdas dinâmicas de comutação
+(energia gasta a cada liga/desliga, proporcional à frequência). Todas empurram a saída para baixo e reduzem o
+rendimento.</li>
+</ol>
+<p>Em resumo: como o conversor não pode criar energia, vale V<sub>out</sub>·I<sub>out</sub> = η·V<sub>in</sub>·I<sub>in</sub>
+com η &lt; 1. Toda perda aparece como tensão faltando na saída.</p>
+
+<div class="q"><b>Questão 2.</b> O que acontece com a ondulação (<i>ripple</i>) da tensão de saída se você aumentar a frequência de chaveamento de 1 kHz para 10 kHz mantendo os mesmos valores de L e C?</div>
+<p>A ondulação <b>diminui praticamente na mesma proporção</b> — medimos uma queda de <b>1,164&nbsp;V para
+105&nbsp;mV</b>, ou seja, um fator de <b>11,1&nbsp;×</b> para um aumento de 10&nbsp;× na frequência (seção 7.1).
+A tensão média praticamente não muda (23,097&nbsp;V → 23,222&nbsp;V), porque o valor médio depende de D, não de
+f<sub>s</sub>.</p>
+<p>A razão é direta: durante a Etapa 1 o diodo está bloqueado e <b>só o capacitor alimenta a carga</b>. Ele perde a
+carga ΔQ = I<sub>out</sub>·D·T, e a queda de tensão correspondente é</p>
+<div class="form">ΔV<sub>out</sub> = ΔQ / C = I<sub>out</sub> · D · T / C = I<sub>out</sub> · D / (C · f<sub>s</sub>)</div>
+<p>Dobrar a frequência significa metade do tempo descarregando o capacitor e, portanto, metade da ondulação. Pelo
+mesmo motivo a ondulação de corrente no indutor, ΔI<sub>L</sub> = V<sub>in</sub>·D/(L·f<sub>s</sub>), também cai
+10&nbsp;×, o que afasta o conversor da fronteira do modo descontínuo e melhora a regulação.</p>
+<p><b>Consequência prática.</b> É exatamente por isso que fontes chaveadas comerciais operam entre dezenas e
+centenas de kHz: para uma mesma ondulação admissível, o aumento da frequência permite reduzir L e C na mesma
+proporção, barateando e miniaturizando a fonte. O limite é o <b>compromisso</b> com as perdas de comutação, que
+crescem linearmente com f<sub>s</sub> (cada transição dissipa energia no MOSFET e no diodo), com o aquecimento do
+núcleo e com a interferência eletromagnética gerada pelos dv/dt e di/dt mais rápidos.</p>
+
+<div class="q"><b>Questão 3.</b> O que ocorre com o circuito se você remover o resistor de carga (deixar a saída em aberto) mantendo o chaveamento ativo?</div>
+<p>A tensão de saída <b>sobe indefinidamente</b>, sem encontrar ponto de equilíbrio. Na simulação, com D = 50&nbsp;%,
+ela atingiu 91,5&nbsp;V em 151&nbsp;ms, 133,7&nbsp;V em 388&nbsp;ms e <b>239,3&nbsp;V em 1,4&nbsp;s</b>, continuando a
+crescer (seção 7.2) — contra os 23&nbsp;V do mesmo circuito com carga.</p>
+<p>O motivo está no balanço de energia. A cada ciclo o indutor acumula energia na Etapa 1 e a entrega ao capacitor
+na Etapa 2. <b>Com carga</b>, o resistor drena essa energia e o sistema encontra o equilíbrio em que a potência
+entregue é igual à consumida — é esse equilíbrio que fixa V<sub>out</sub> em 23&nbsp;V. <b>Sem carga</b>, não existe
+caminho de descarga: a energia só se acumula no capacitor, e como E = ½·C·V², a tensão cresce ciclo após ciclo.</p>
+<p>Note que a taxa de crescimento vai <b>desacelerando</b> (91&nbsp;V em 0,15&nbsp;s, mas apenas mais 106&nbsp;V em
+todo o segundo seguinte). Isso acontece porque, com V<sub>out</sub> cada vez maior, a tensão reversa sobre o indutor
+na Etapa 2 (V<sub>in</sub> − V<sub>out</sub>) também cresce, descarregando-o mais rápido e reduzindo a energia
+transferida por ciclo. A ondulação medida cai junto, de 1,579&nbsp;V para 545&nbsp;mV, pelo mesmo motivo.</p>
+<p><b>Consequências práticas — por que isso é perigoso.</b></p>
+<ul>
+<li>O <b>capacitor eletrolítico</b> (tipicamente 35&nbsp;V ou 50&nbsp;V num projeto de 24&nbsp;V) seria destruído
+muito antes dos 239&nbsp;V medidos, podendo explodir.</li>
+<li>O <b>MOSFET</b> fica submetido a V<sub>out</sub> + V<sub>D</sub> quando bloqueado e entra em avalanche ao superar
+sua tensão V<sub>DS</sub> máxima. O modelo do simulador não representa essa ruptura — no circuito real o componente
+simplesmente queima.</li>
+<li>Por isso conversores Boost reais <b>nunca</b> operam em malha aberta: usam realimentação que reduz D quando a
+saída sobe, além de proteções de sobretensão (zener, <i>crowbar</i>) e, muitas vezes, uma carga mínima
+(resistor de <i>bleeder</i>).</li>
+<li>Vale lembrar ainda que a topologia Boost tem um <b>caminho DC direto</b> da entrada para a saída através do
+indutor e do diodo: mesmo com o PWM desligado, a saída fica em V<sub>in</sub> − V<sub>D</sub> ≈ 11,3&nbsp;V. O
+conversor não consegue desligar a carga nem se proteger contra curto-circuito na saída.</li>
+</ul>
+
+<h2>9. Links dos circuitos para conferência</h2>
+<p>Os dois links abrem o circuito já montado e em execução, com os três osciloscópios configurados. Para repetir os
+experimentos, basta clicar com o botão direito na fonte de onda quadrada, escolher <i>Edit</i> e alterar o
+<i>Duty Cycle</i> ou a <i>Frequency</i>.</p>
+
+<div class="link">
+<div class="t">CIRCUITO 1 (PRINCIPAL) — Boost com MOSFET de potência (R<sub>DS(on)</sub> ≈ 24 mΩ)</div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEA2SIFo+yAoAbuAJwBMIALHEaWCVHReKWs9AjgDZVcDMxaNTKLAi4A7iF79a3BNVq4AZiGIAOFcsjqZpPuv6t0OACYTZXMiqk6QRgKYKAhgFd2AFxwBjcpfM+KzIXgRHHELKxRNLlwAJwj1ATjySn44ENMdYjJ0pOZ8ZTUc-PVdOmp4cACWNnEE-yLCsXq67Qa0lrqw1tC-SlR1OtwAc2zmszJeKBwAe3ByOjBVSG4NISQ0aglpkAB2ObRx7hUwbcIVmCQIUl3uLdOs-eQwdarlcBwgA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEA2SIFo+yAoAbuAJwBMIALHEaWCVHReKWs9AjgDZVcDMxaNTKLAi4A7iF79a3BNVq4AZiGIAOFcsjqZpPuv6t0OACYTZXMiqk6QRgKYKAhgFd2AFxwBjcpfM+KzIXgRHHELKxRNLlwAJwj1ATjySn44ENMdYjJ0pOZ8ZTUc-PVdOmp4cACWNnEE-yLCsXq67Qa0lrqw1tC-SlR1OtwAc2zmszJeKBwAe3ByOjBVSG4NISQ0aglpkAB2ObRx7hUwbcIVmCQIUl3uLdOs-eQwdarlcBwgA</a></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Abre em D = 50&nbsp;%, fornecendo ≈ 23,1&nbsp;V na carga. É o circuito que reproduz os valores previstos no roteiro.</div>
+</div>
+
+<div class="link">
+<div class="t">CIRCUITO 2 (COMPARATIVO) — mesmo circuito com o MOSFET nos parâmetros de fábrica</div>
+<div class="mono"><a href="https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEA2SIFo+yAoAbuAJwBMIALHEaWCVHReKWs9AjgDZVcDMxaNTKLAi4A7iF79a3BNVq4AZiGIAOFcsjqZpPuv6shkYjgAmE2VzIqpOkCYCmCgIYBXdgBccAY3LXLfimZDOBEccSsbFE0uXAAnKPUBBPJKfjgw8x1iMkyU5nxlNTzC9V06anhwIJY2cSTAkuKxRobtJoy2hoj28IDKVHUG3ABzXNaLMl4oHAB7cHI6MFVIbg0hJDRqCVmQAHYFtEnuFTBdwjWYJAhSfe4d85zD5DBNmuVwHCA">https://www.falstad.com/circuit/circuitjs.html?ctz=CQAgjCAMB0l3BWEA2SIFo+yAoAbuAJwBMIALHEaWCVHReKWs9AjgDZVcDMxaNTKLAi4A7iF79a3BNVq4AZiGIAOFcsjqZpPuv6shkYjgAmE2VzIqpOkCYCmCgIYBXdgBccAY3LXLfimZDOBEccSsbFE0uXAAnKPUBBPJKfjgw8x1iMkyU5nxlNTzC9V06anhwIJY2cSTAkuKxRobtJoy2hoj28IDKVHUG3ABzXNaLMl4oHAB7cHI6MFVIbg0hJDRqCVmQAHYFtEnuFTBdwjWYJAhSfe4d85zD5DBNmuVwHCA</a></div>
+<div style="font-size:8.6pt;color:#4a5a68;margin-top:5px">Abre em D = 50&nbsp;%, fornecendo ≈ 20,1&nbsp;V. Alterando o <i>Duty Cycle</i> para 75&nbsp;% observa-se a saturação do MOSFET discutida na Questão 1.</div>
+</div>
+
+<h2>10. Conclusão</h2>
+<p>O conversor Boost foi montado e simulado com êxito, e o comportamento previsto pela teoria foi confirmado
+quantitativamente. Com o MOSFET de potência, as tensões medidas (15,2 / 23,1 / 46,9&nbsp;V) ficaram a menos de
+5&nbsp;% dos valores ideais (16 / 24 / 48&nbsp;V), e <b>todo</b> esse desvio é explicado pela queda direta do diodo:
+o modelo V<sub>out</sub> = V<sub>in</sub>/(1−D) − V<sub>D</sub> deixa um resíduo de apenas 0,07 a 0,43&nbsp;V.</p>
+<p>Os osciloscópios evidenciaram as duas etapas de operação: a rampa de corrente crescendo no indutor com a chave
+fechada e decrescendo com a chave aberta, o dente de serra da tensão de saída e a relação direta entre a largura do
+pulso de PWM e a tensão entregue à carga.</p>
+<p>Os experimentos complementares reforçaram dois conceitos centrais de projeto de fontes chaveadas. Primeiro, que a
+ondulação é inversamente proporcional à frequência de chaveamento — medimos 1,164&nbsp;V a 1&nbsp;kHz contra
+105&nbsp;mV a 10&nbsp;kHz, o que justifica as altas frequências das fontes comerciais. Segundo, que o conversor Boost
+<b>não tolera operar sem carga em malha aberta</b>: a saída atingiu 239&nbsp;V e continuava subindo, condição que
+destruiria o capacitor e o MOSFET num circuito real.</p>
+<p>Por fim, a investigação do MOSFET mostrou que a escolha da chave não é um detalhe: o componente padrão do
+simulador, com R<sub>DS(on)</sub> de 5,88&nbsp;Ω e saturação em 0,72&nbsp;A, impede o conversor de atingir razões
+cíclicas elevadas, derrubando a saída de 48&nbsp;V para 16,5&nbsp;V em D = 75&nbsp;%. No Boost a corrente da chave
+cresce com 1/(1−D)², e é essa corrente — não a tensão — que normalmente limita o ganho máximo alcançável na
+prática.</p>
+
+<h2>Apêndice — Netlists dos circuitos</h2>
+<p style="font-size:9pt">Texto importável pelo Falstad (<i>File &gt; Import from Text</i>):</p>
+<h3 style="font-size:9.6pt">Circuito 1 — MOSFET de potência</h3>
+<pre class="mono" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0 0 10px">$ 1 0.000005 60 50 50 50
+v 192 400 192 192 0 0 40 12 0 0 0.5
+l 192 192 320 192 0 0.01 0
+w 320 192 352 192 0
+f 288 208 352 208 0 1.5 5
+d 352 192 480 192 2 default
+c 480 192 480 400 0 0.0001 0
+w 480 192 608 192 0
+r 608 192 608 400 0 100
+w 352 224 352 400 0
+v 288 400 288 208 0 2 1000 10 0 0 0.5
+w 192 400 288 400 0
+w 288 400 352 400 0
+w 352 400 480 400 0
+w 480 400 608 400 0
+g 352 400 352 432 0
+o 1 4 0 12803 20 0.5 0 2 1 3
+o 7 4 0 4338179 20 0.5 1 2 7 3
+o 9 4 0 4610 20 0.5 2 1</pre>
+<h3 style="font-size:9.6pt">Circuito 2 — MOSFET padrão</h3>
+<pre class="mono" style="background:#f5f7f9;border:1px solid #dde4ea;padding:7px;white-space:pre-wrap;margin:0">$ 1 0.000005 60 50 50 50
+v 192 400 192 192 0 0 40 12 0 0 0.5
+l 192 192 320 192 0 0.01 0
+w 320 192 352 192 0
+f 288 208 352 208 0 1.5 0.02
+d 352 192 480 192 2 default
+c 480 192 480 400 0 0.0001 0
+w 480 192 608 192 0
+r 608 192 608 400 0 100
+w 352 224 352 400 0
+v 288 400 288 208 0 2 1000 10 0 0 0.5
+w 192 400 288 400 0
+w 288 400 352 400 0
+w 352 400 480 400 0
+w 480 400 608 400 0
+g 352 400 352 432 0
+o 1 4 0 12803 20 0.5 0 2 1 3
+o 7 4 0 4338179 20 0.5 1 2 7 3
+o 9 4 0 4610 20 0.5 2 1</pre>
+
+</body></html>
